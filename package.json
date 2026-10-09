@@ -1,0 +1,14 @@
+{
+  "name": "mern-ml-project",
+  "private": true,
+  "scripts": {
+    "client": "npm --prefix frontend run dev",
+    "server": "npm --prefix backend run dev",
+    "ml": "python -m uvicorn app.main:app --app-dir ml-service --reload --port 8000",
+    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run ml\"",
+    "install:all": "npm install && npm --prefix frontend install && npm --prefix backend install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

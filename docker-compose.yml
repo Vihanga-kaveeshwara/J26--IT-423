@@ -1,11 +1,20 @@
 services:
-  mongodb:
-    image: mongo:8
+  postgres:
+    image: postgres:16-alpine
     restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: project_database
     ports:
-      - "27017:27017"
+      - "5432:5432"
     volumes:
-      - mongodb_data:/data/db
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d project_database"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   backend:
     build: ./backend
@@ -13,13 +22,15 @@ services:
     environment:
       NODE_ENV: production
       PORT: 5000
-      MONGODB_URI: mongodb://mongodb:27017/project_database
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/project_database
       ML_SERVICE_URL: http://ml-service:8000
     ports:
       - "5000:5000"
     depends_on:
-      - mongodb
-      - ml-service
+      postgres:
+        condition: service_healthy
+      ml-service:
+        condition: service_started
 
   frontend:
     build: ./frontend
@@ -39,4 +50,4 @@ services:
       - "8000:8000"
 
 volumes:
-  mongodb_data:
+  postgres_data:

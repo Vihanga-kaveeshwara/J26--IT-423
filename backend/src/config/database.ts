@@ -1,17 +1,18 @@
-import mongoose from 'mongoose';
-import { config } from './env';
+import { PrismaClient } from '@prisma/client';
+
+export const prisma = new PrismaClient();
 
 export async function connectDatabase(): Promise<void> {
   try {
-    await mongoose.connect(config.mongoUri);
-    console.info('MongoDB connected');
+    await prisma.$connect();
+    console.info('PostgreSQL connected through Prisma');
   } catch (error) {
-    console.error('MongoDB connection failed', error);
+    console.error('PostgreSQL connection failed', error);
     throw error;
   }
 }
 
 export async function disconnectDatabase(): Promise<void> {
-  await mongoose.disconnect();
-  console.info('MongoDB disconnected');
+  await prisma.$disconnect();
+  console.info('PostgreSQL disconnected');
 }

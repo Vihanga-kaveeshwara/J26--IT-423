@@ -13,6 +13,6 @@ function requiredEnv(name: string): string {
 export const config = {
   nodeEnv: process.env.NODE_ENV ?? 'development',
   port: Number(process.env.PORT ?? 5000),
-  mongoUri: requiredEnv('MONGODB_URI'),
+  databaseUrl: requiredEnv('DATABASE_URL'),
   mlServiceUrl: requiredEnv('ML_SERVICE_URL'),
 };

@@ -10,7 +10,7 @@ export function listDatasetsController(_req: Request, res: Response): void {
 }
 
 export function getDatasetDetailsController(req: Request, res: Response): void {
-  const { id } = req.params;
+  const id = String(req.params.id);
   const result = datasetService.getDataset(id);
   if (!result) {
     res.status(404).json({ success: false, message: 'Dataset version not found' });
@@ -23,7 +23,7 @@ export function getDatasetDetailsController(req: Request, res: Response): void {
 }
 
 export function activateDatasetController(req: Request, res: Response): void {
-  const { id } = req.params;
+  const id = String(req.params.id);
   const success = datasetService.activateDataset(id);
   if (!success) {
     res.status(404).json({ success: false, message: 'Dataset not found for activation' });

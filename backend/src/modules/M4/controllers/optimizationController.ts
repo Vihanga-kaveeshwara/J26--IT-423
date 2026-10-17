@@ -43,7 +43,7 @@ export function listOptimizationRunsController(_req: Request, res: Response): vo
 }
 
 export function getOptimizationRunByIdController(req: Request, res: Response): void {
-  const { id } = req.params;
+  const id = String(req.params.id);
   const run = optimizationService.getRunById(id);
   if (!run) {
     res.status(404).json({ success: false, message: 'Optimization run not found' });
@@ -56,7 +56,7 @@ export function getOptimizationRunByIdController(req: Request, res: Response): v
 }
 
 export function getOptimizationRunResultsController(req: Request, res: Response): void {
-  const { id } = req.params;
+  const id = String(req.params.id);
   const allocations = optimizationService.getRunAllocations(id);
   res.json({
     success: true,

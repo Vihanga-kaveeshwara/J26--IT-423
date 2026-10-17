@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,8 +8,41 @@
   font-family: Inter, system-ui, sans-serif;
   color: #0f172a;
   background: #f8fafc;
+  --color-ceylon-dark: #123D2B;
+  --color-ceylon-leaf: #286B45;
+  --color-ceylon-emerald: #3D8B62;
+  --color-ceylon-ivory: #F8F5ED;
+  --color-ceylon-palegreen: #E8F0E5;
+  --color-ceylon-gold: #C6A15B;
+  --color-ceylon-charcoal: #202922;
+  --color-ceylon-muted: #778278;
 }
 
 body {
   margin: 0;
+  background-color: #F8F5ED;
+  color: #202922;
 }
+
+.font-serif-ceylon {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-sans-ceylon {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(232, 240, 229, 0.8);
+}
+
+.ceylon-gradient {
+  background: linear-gradient(135deg, #123D2B 0%, #1e5239 50%, #286B45 100%);
+}
+
+.gold-gradient {
+  background: linear-gradient(135deg, #C6A15B 0%, #d8b46e 100%);
+}
+

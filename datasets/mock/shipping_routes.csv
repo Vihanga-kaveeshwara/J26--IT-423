@@ -1,0 +1,8 @@
+route_id,origin,destination_market_id,destination_market,destination_port,transport_mode,freight_cost_usd_per_kg,handling_cost_usd_per_kg,customs_admin_cost_usd_per_kg,transit_days_estimate,route_capacity_kg_per_quarter,route_risk_score_0_to_1,route_available,source_component,dataset_version,data_source_type
+RTE-RUS-1,"Colombo Port, Sri Lanka",MKT-RUS,Russia,Novorossiysk,SEA,0.82,0.067,0.041,22,398941,0.19999999999999998,True,M2_MOCK_OUTPUT,M2-MOCK-v1.0,SYNTHETIC_DEMO
+RTE-RUS-2,"Colombo Port, Sri Lanka",MKT-RUS,Russia,St. Petersburg,SEA,0.94,0.067,0.038,28,292956,0.237,True,M2_MOCK_OUTPUT,M2-MOCK-v1.0,SYNTHETIC_DEMO
+RTE-UAE-1,"Colombo Port, Sri Lanka",MKT-UAE,UAE,Jebel Ali,SEA,0.38,0.091,0.046,7,641519,0.066,True,M2_MOCK_OUTPUT,M2-MOCK-v1.0,SYNTHETIC_DEMO
+RTE-UAE-2,"Colombo Port, Sri Lanka",MKT-UAE,UAE,Sharjah,SEA,0.42,0.09,0.044,8,404467,0.109,True,M2_MOCK_OUTPUT,M2-MOCK-v1.0,SYNTHETIC_DEMO
+RTE-IRQ-1,"Colombo Port, Sri Lanka",MKT-IRQ,Iraq,Umm Qasr,SEA,0.65,0.085,0.035,14,361098,0.192,True,M2_MOCK_OUTPUT,M2-MOCK-v1.0,SYNTHETIC_DEMO
+RTE-TUR-1,"Colombo Port, Sri Lanka",MKT-TUR,Turkey,Mersin,SEA,0.76,0.085,0.047,18,433543,0.125,True,M2_MOCK_OUTPUT,M2-MOCK-v1.0,SYNTHETIC_DEMO
+RTE-IRN-1,"Colombo Port, Sri Lanka",MKT-IRN,Iran,Bandar Abbas,SEA,0.61,0.068,0.042,12,312715,0.244,True,M2_MOCK_OUTPUT,M2-MOCK-v1.0,SYNTHETIC_DEMO

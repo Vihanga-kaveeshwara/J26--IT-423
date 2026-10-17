@@ -1,0 +1,4 @@
+packaging_id,packaging_name,compatible_grade_ids,capacity_kg_per_unit,packaging_cost_usd_per_kg,wastage_rate,max_units_per_quarter,data_source_type
+PKG-BULK,Bulk export liner,TEA-BOP;TEA-OP;TEA-GREEN,500,0.075,0.012,1600,SYNTHETIC_DEMO
+PKG-RETAIL,Consumer retail packet cartons,TEA-BOP;TEA-OP;TEA-GREEN,25,0.24,0.007,6000,SYNTHETIC_DEMO
+PKG-TEABAG,Tagged tea bags dispenser carton,TEA-BOP;TEA-GREEN,10,0.45,0.005,4000,SYNTHETIC_DEMO

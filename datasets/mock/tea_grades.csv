@@ -1,0 +1,4 @@
+tea_grade_id,tea_grade_name,illustrative_supply_cost_usd_per_kg,active,data_source_type
+TEA-BOP,BOP Black Tea,3.1,True,SYNTHETIC_DEMO
+TEA-OP,OP Black Tea,3.45,True,SYNTHETIC_DEMO
+TEA-GREEN,Green Tea,4.75,True,SYNTHETIC_DEMO

@@ -1,0 +1,6 @@
+market_id,market_name,destination_port,currency,active,data_source_type
+MKT-RUS,Russia,Novorossiysk,USD,True,SYNTHETIC_DEMO
+MKT-UAE,UAE,Jebel Ali,USD,True,SYNTHETIC_DEMO
+MKT-IRQ,Iraq,Umm Qasr,USD,True,SYNTHETIC_DEMO
+MKT-TUR,Turkey,Mersin,USD,True,SYNTHETIC_DEMO
+MKT-IRN,Iran,Bandar Abbas,USD,True,SYNTHETIC_DEMO

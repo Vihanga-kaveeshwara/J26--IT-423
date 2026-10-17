@@ -16,6 +16,10 @@ import {
   runSensitivityController,
   getBacktestingHistoryController,
 } from '../controllers/analysisController';
+import {
+  listModelsController,
+  getModelByIdController,
+} from '../controllers/modelController';
 import { authenticateJWT } from '../../../middleware/authentication';
 
 const router = Router();
@@ -37,5 +41,9 @@ router.delete('/scenarios/:id', authenticateJWT, deleteScenarioController);
 router.post('/sensitivity-runs', authenticateJWT, runSensitivityController);
 router.get('/backtesting/history', authenticateJWT, getBacktestingHistoryController);
 router.post('/backtesting-runs', authenticateJWT, getBacktestingHistoryController);
+
+// Model Management & Registry
+router.get('/models', authenticateJWT, listModelsController);
+router.get('/models/:id', authenticateJWT, getModelByIdController);
 
 export default router;

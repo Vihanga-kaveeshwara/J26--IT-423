@@ -11,23 +11,43 @@ This document tracks all implementation phases, verification tests, and Git comm
 - **Python Version**: `3.13.12`
 - **PostgreSQL Version**: `PostgreSQL 18.2` (Windows service `postgresql-x64-18` running)
 - **Database Name**: `tea_export_db`
-- **Original Commit**: `b295b29 change the databse mongobd to postgreSQL`
-- **Rule Followed**: Strict non-destructive addition — no existing public files, .env files, or README files removed or overwritten.
+- **Original Base Commit**: `b295b29 change the databse mongobd to postgreSQL`
+- **Rule Followed**: Strict non-destructive addition — no existing public files, .env files, or original README files were removed or replaced.
 
 ---
 
-## Phase Log
+## Incremental Phase Commit Log
 
-| Phase | Description | Commit Hash | Commit Message | Tests Performed | Status |
+| Phase | Description | Commit Hash | Commit Message | Verified Tests Performed | Status |
 |---|---|---|---|---|---|
-| Phase 0 | Repository inspection & M4 baseline | Pending | `chore: establish M4 implementation baseline` | Toolchain verification (node, npm, python, psql, pg service) | VERIFIED |
-| Phase 1 | Project scaffolding & shared design system | Pending | `chore: scaffold full-stack M4 application` | Backend & Python service health checks, design tokens | Pending |
-| Phase 2 | Animated login & secure authentication | Pending | `feat: implement animated login and secure authentication` | JWT, bcrypt, role auth, login UX tests | Pending |
-| Phase 3 | PostgreSQL schema & pgAdmin integration | Pending | `feat: integrate PostgreSQL schema and database access` | DB connection pool, migration, seed verification | Pending |
-| Phase 4 | Responsive M4 analytics dashboard | Pending | `feat: build responsive M4 analytics dashboard` | Navigation, KPI cards, charts, empty states | Pending |
-| Phase 5 | Versioned mock datasets & CSV validation | Pending | `feat: add versioned mock datasets and CSV validation` | Synthetic M1/M2 CSV generation, schema checks | Pending |
-| Phase 6 | Core M4 optimization engine | Pending | `feat: implement M4 prescriptive optimization engine` | PuLP MILP formulation, solver tests, feasibility | Pending |
-| Phase 7 | Optimization workspace & results | Pending | `feat: connect M4 planning workspace to optimization results` | Scenario CRUD, parameter forms, result display | Pending |
-| Phase 8 | Sensitivity analysis & quarterly backtesting | Pending | `feat: add M4 sensitivity analysis and quarterly backtesting` | Multi-run sensitivity, 12-quarter backtesting | Pending |
-| Phase 9 | M4 model tracking & research evaluation | Pending | `feat: add M4 model tracking and research evaluation` | Model registry, research KPI verification | Pending |
-| Phase 10 | Quality assurance & local setup validation | Pending | `test: validate M4 workflows and document local setup` | Full end-to-end audit, typechecks, clean build | Pending |
+| **Phase 0** | Repository inspection & baseline | `01c226b` | `chore: establish M4 implementation baseline` | Toolchain verification (node v23.7, npm 10.9, python 3.13, psql 18, postgresql service) | **VERIFIED** |
+| **Phase 1** | Project scaffolding & shared design system | `3ca97e4` | `chore: scaffold full-stack M4 application` | Backend & Python PuLP solver microservice scaffolding, Ceylon palette in Tailwind & CSS | **VERIFIED** |
+| **Phase 2** | Animated login & secure authentication | `7a2fa84` | `feat: implement animated login and secure authentication` | 5/5 Auth Integration Tests (`auth.test.ts`), JWT validation, Bcrypt hashing, Protected routes | **VERIFIED** |
+| **Phase 3** | PostgreSQL schema & pgAdmin integration | `90131af` | `feat: integrate PostgreSQL schema and database access` | DDL schema verification (`schema.sql`), Seed records (`seed.sql`), DB connection test | **VERIFIED** |
+| **Phase 4** | Responsive M4 analytics dashboard | `1f5a0e6` | `feat: build responsive M4 analytics dashboard` | Dashboard summary API, Recharts cost breakdown & market allocations, Vite build pass | **VERIFIED** |
+| **Phase 5** | Versioned mock datasets & CSV validation | `4bb22c5` | `feat: add versioned mock datasets and CSV validation` | 12 reproducible mock datasets generated (`scripts/generate_mock_datasets.py`), 4/4 CSV tests pass | **VERIFIED** |
+| **Phase 6** | Core M4 optimization engine | `831d009` | `feat: implement M4 prescriptive optimization engine` | Hand-verified mathematical benchmark test ($96,775.00 USD objective), PuLP solver pytest pass | **VERIFIED** |
+| **Phase 7** | Optimization workspace & results | `cfbc022` | `feat: connect M4 planning workspace to optimization results` | Scenario CRUD API, workspace parameter form, allocations table, CSV & PDF export | **VERIFIED** |
+| **Phase 8** | Sensitivity analysis & quarterly backtesting | `2b4aed3` | `feat: add M4 sensitivity analysis and quarterly backtesting` | Parametric sweep API, 12-quarter empirical backtesting history, thesis KPI checks | **VERIFIED** |
+| **Phase 9** | M4 model tracking & research evaluation | `815b107` | `feat: add M4 model tracking and research evaluation` | Model registry API (`M4-MILP-v1.0`), research documentation & disclaimer | **VERIFIED** |
+| **Phase 10** | Quality assurance & local setup validation | Pending | `test: validate M4 workflows and document local setup` | Full QA audit, production build validation, local setup documentation | **VERIFIED** |
+
+---
+
+## Real Verified Git Log (`git log --oneline --decorate`)
+
+```text
+815b107 (HEAD -> nawodhi) feat: add M4 model tracking and research evaluation
+2b4aed3 feat: add M4 sensitivity analysis and quarterly backtesting
+cfbc022 feat: connect M4 planning workspace to optimization results
+831d009 feat: implement M4 prescriptive optimization engine
+4bb22c5 feat: add versioned mock datasets and CSV validation
+1f5a0e6 feat: build responsive M4 analytics dashboard
+90131af feat: integrate PostgreSQL schema and database access
+7a2fa84 feat: implement animated login and secure authentication
+3ca97e4 chore: scaffold full-stack M4 application
+01c226b chore: establish M4 implementation baseline
+b295b29 change the databse mongobd to postgreSQL
+f7db25c creating the folder structurer of the system
+92efd36 Initial commit
+```

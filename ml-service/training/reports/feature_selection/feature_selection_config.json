@@ -1,0 +1,53 @@
+{
+  "dataset": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\dataset\\M1_combined_monthly_raw.csv",
+  "processed_dataset_audited": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\data\\processed\\tea_exports_cleaned.csv",
+  "target": "_target_model_mn_kg",
+  "horizon_months": 12,
+  "candidate_features": [
+    "target_lag_1",
+    "target_lag_3",
+    "target_lag_6",
+    "target_lag_12",
+    "target_rolling_mean_3",
+    "target_rolling_std_3",
+    "target_rolling_mean_6",
+    "target_rolling_std_6",
+    "target_rolling_mean_12",
+    "target_rolling_std_12",
+    "target_change_1",
+    "target_pct_change_1",
+    "target_month",
+    "target_month_sin",
+    "target_month_cos",
+    "origin_time_index"
+  ],
+  "selection_rule": "fold-local inner chronological validation; always include target_lag_12 and target-month sine/cosine, then add highest-ranked ensemble features to a maximum of eight",
+  "diagnostic_scores": [
+    "absolute_target_correlation",
+    "mutual_information",
+    "xgb_gain_importance",
+    "validation_permutation_importance"
+  ],
+  "inner_validation_size": 12,
+  "stable_feature_threshold": 0.5,
+  "final_selected_features": [
+    "target_lag_1",
+    "target_lag_12",
+    "target_rolling_std_6",
+    "target_pct_change_1",
+    "target_month",
+    "target_month_sin",
+    "target_month_cos",
+    "origin_time_index"
+  ],
+  "validation_period": [
+    "2021-01",
+    "2022-12"
+  ],
+  "test_period": [
+    "2023-01",
+    "2024-12"
+  ],
+  "random_seed": 42,
+  "test_selection_policy": "fixed from validation selection frequency; no test targets used to select features"
+}

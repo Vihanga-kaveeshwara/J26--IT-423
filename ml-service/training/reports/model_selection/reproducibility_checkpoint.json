@@ -1,0 +1,96 @@
+{
+  "created_by": "model_selection_audit.py",
+  "horizon_months": 12,
+  "frozen_selected_features": [
+    "target_lag_1",
+    "target_lag_12",
+    "target_rolling_std_6",
+    "target_pct_change_1",
+    "target_month",
+    "target_month_sin",
+    "target_month_cos",
+    "origin_time_index"
+  ],
+  "raw_dataset": {
+    "path": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\dataset\\M1_combined_monthly_raw.csv",
+    "size_bytes": 160431,
+    "sha256": "f35a9cde764724e6a927c48b110a7e3b53301a0d1f808486b13f2e70bd380f03"
+  },
+  "source_files": [
+    {
+      "path": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\dataset\\M1_combined_monthly_raw.csv",
+      "size_bytes": 160431,
+      "sha256": "f35a9cde764724e6a927c48b110a7e3b53301a0d1f808486b13f2e70bd380f03"
+    },
+    {
+      "path": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\data\\processed\\tea_exports_cleaned.csv",
+      "size_bytes": 203755,
+      "sha256": "ec48cfec28f900e4ea3010cd9dac76aaa2152eb4f174a3f6e4e0ecd4028f56b3"
+    },
+    {
+      "path": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\reports\\forecast_experiments\\predictions.csv",
+      "size_bytes": 3535,
+      "sha256": "e7aee0dd8b75cce1917e27f9cabc168f7b74986da2ddc9fe303ff6447aa98a68"
+    },
+    {
+      "path": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\reports\\forecast_experiments\\metrics.csv",
+      "size_bytes": 711,
+      "sha256": "72eabc8f3191fe91e471fdfbf55d95f743ab6c81ab055c1276b347017c597738"
+    },
+    {
+      "path": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\reports\\feature_selection\\feature_selection_predictions.csv",
+      "size_bytes": 11305,
+      "sha256": "f673c9ee44d12f1eb19ef7119c602b6af89cda0a6b7b6fce23d6559a27cbf7d5"
+    },
+    {
+      "path": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\reports\\feature_selection\\feature_subset_comparison.csv",
+      "size_bytes": 968,
+      "sha256": "d55983e10f7087d26eaffbccb4648728f7d5ae8091d5de3d5b0b8cb4ac6d86b4"
+    }
+  ],
+  "raw_dataset_modified_by_audit": false,
+  "historical_outputs_overwritten": false,
+  "unit_definition_verified": false,
+  "data_provenance_status": "uncertain; project contains no provider documentation proving source provenance",
+  "sarima_specs": {
+    "baseline_111_111": {
+      "order": [
+        1,
+        1,
+        1
+      ],
+      "seasonal_order": [
+        1,
+        1,
+        1,
+        12
+      ]
+    },
+    "ma_seasonal": {
+      "order": [
+        0,
+        1,
+        1
+      ],
+      "seasonal_order": [
+        1,
+        1,
+        1,
+        12
+      ]
+    },
+    "ar_seasonal": {
+      "order": [
+        1,
+        1,
+        0
+      ],
+      "seasonal_order": [
+        1,
+        1,
+        1,
+        12
+      ]
+    }
+  }
+}

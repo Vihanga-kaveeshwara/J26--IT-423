@@ -1,0 +1,2 @@
+validation_selection_configured,test_selection_policy,final_test_used_for_selection,final_selected_features,experiment_validation_period
+True,fixed from validation selection frequency; no test targets used to select features,False,target_lag_1|target_lag_12|target_rolling_std_6|target_pct_change_1|target_month|target_month_sin|target_month_cos|origin_time_index,rolling origin

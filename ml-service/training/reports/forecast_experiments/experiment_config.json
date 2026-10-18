@@ -1,0 +1,30 @@
+{
+  "dataset": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\dataset\\M1_combined_monthly_raw.csv",
+  "target": "TB_Total_Exports",
+  "target_model_unit": "mn_kg",
+  "horizon_months": 12,
+  "duplicate_resolution": "remove only exact duplicate copies in experiment view; no aggregation",
+  "features": [
+    "target_lag_1",
+    "target_lag_3",
+    "target_lag_6",
+    "target_lag_12",
+    "target_rolling_mean_3",
+    "target_rolling_std_3",
+    "target_rolling_mean_6",
+    "target_rolling_std_6",
+    "target_rolling_mean_12",
+    "target_rolling_std_12",
+    "target_change_1",
+    "target_pct_change_1",
+    "target_month",
+    "target_month_sin",
+    "target_month_cos",
+    "origin_time_index"
+  ],
+  "excluded_feature_policy": "Raw contemporaneous/exogenous columns excluded until publication-time availability is documented.",
+  "training_cutoff_rule": "for forecast origin t, train direct samples whose origin <= t and label date <= t",
+  "validation_protocol": "rolling origin; target dates 2021-01 through 2024-12; final test metrics target dates 2023-01 through 2024-12",
+  "random_seed": 42,
+  "lstm": "not run; 300 unique monthly periods is a small sample for an additional deep sequence model"
+}

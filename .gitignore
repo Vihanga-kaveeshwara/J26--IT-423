@@ -14,6 +14,14 @@ venv/
 ml-service/trained_models/*
 !ml-service/trained_models/.gitkeep
 
+# EDA outputs may contain dataset-derived statistics and figures.
+ml-service/training/reports/eda/*
+!ml-service/training/reports/eda/.gitkeep
+
+# Preprocessing outputs are derived from the local dataset.
+ml-service/training/data/processed/*
+ml-service/training/reports/preprocessing/*
+
 uploads/*
 !uploads/.gitkeep
 

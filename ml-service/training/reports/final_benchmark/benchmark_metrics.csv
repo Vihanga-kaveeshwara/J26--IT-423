@@ -1,0 +1,7 @@
+n,mae,rmse,mape_pct,mase,phase,model,common_sample,sarima_reliable_predictions,mase_scaling_rule
+21,13.121888666666667,48.71877407889843,62.29660102268342,2.7305591274927092,validation,seasonal_naive,True,,mean absolute 12-month seasonal difference through 2020-12
+21,3.0740112557725676,4.44373669554558,14.786633102829128,0.6396769326192863,validation,sarima,True,21.0,mean absolute 12-month seasonal difference through 2020-12
+21,27.320640836077008,58.46074116923338,127.28103002158042,5.6852048587644965,validation,xgboost_selected,True,,mean absolute 12-month seasonal difference through 2020-12
+22,22.10071959090909,67.1851422630918,71.05800042446882,4.036964618042306,test,seasonal_naive,True,,mean absolute 12-month seasonal difference through 2022-12
+22,18.556846792764738,46.36094272258964,53.2538897223398,3.3896332477625726,test,sarima,True,21.0,mean absolute 12-month seasonal difference through 2022-12
+22,26.44176266281128,66.33785361784525,93.56533802023749,4.829908812215757,test,xgboost_selected,True,,mean absolute 12-month seasonal difference through 2022-12

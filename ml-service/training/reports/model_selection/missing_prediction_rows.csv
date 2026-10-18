@@ -1,0 +1,4 @@
+phase,origin_date,target_date,source,model
+validation,2020-06,2021-06,feature_selection,seasonal_naive_12
+test,2022-09,2023-09,feature_selection,seasonal_naive_12
+test,2022-11,2023-11,feature_selection,seasonal_naive_12

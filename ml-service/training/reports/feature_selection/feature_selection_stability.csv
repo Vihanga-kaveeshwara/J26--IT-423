@@ -1,0 +1,17 @@
+feature,folds_observed,folds_selected,selection_frequency,stability_class
+origin_time_index,22,22,1.0,consistent
+target_change_1,22,1,0.045454545454545456,inconsistent
+target_lag_1,22,17,0.7727272727272727,consistent
+target_lag_12,22,22,1.0,consistent
+target_lag_3,22,4,0.18181818181818182,inconsistent
+target_lag_6,22,1,0.045454545454545456,inconsistent
+target_month,22,22,1.0,consistent
+target_month_cos,22,22,1.0,consistent
+target_month_sin,22,22,1.0,consistent
+target_pct_change_1,22,13,0.5909090909090909,moderate
+target_rolling_mean_12,22,0,0.0,inconsistent
+target_rolling_mean_3,22,4,0.18181818181818182,inconsistent
+target_rolling_mean_6,22,0,0.0,inconsistent
+target_rolling_std_12,22,1,0.045454545454545456,inconsistent
+target_rolling_std_3,22,3,0.13636363636363635,inconsistent
+target_rolling_std_6,22,22,1.0,consistent

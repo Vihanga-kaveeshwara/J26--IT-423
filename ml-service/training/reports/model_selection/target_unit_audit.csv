@@ -1,0 +1,3 @@
+TB_Quantity_Unit,rows,raw_min,raw_max,converted_min,converted_max,source_definition_verified,limitation
+kg,230,2846289.4,268776910.0,2.8462894,268.77691,False,Observed unit labels only; provider documentation was not available in the project.
+mn_kg,72,18.347,28.389,18.347,28.389,False,Observed unit labels only; provider documentation was not available in the project.

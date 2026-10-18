@@ -1,0 +1,4 @@
+date,observed_target,expected_lag_1,actual_lag_1,lag_1_matches,expected_lag_12,actual_lag_12,lag_12_matches,rolling_mean_3_uses_prior_three
+2001-01,22.682,23.578,23.578,True,22.693,22.693,True,verified by shift(1); current target excluded
+2001-02,22.457,22.682,22.682,True,22.682,22.682,True,verified by shift(1); current target excluded
+2010-01,24.975257,25.951929,25.951929,True,22.395542,22.395542,True,verified by shift(1); current target excluded

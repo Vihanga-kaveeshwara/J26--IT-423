@@ -1,0 +1,30 @@
+{
+  "dataset": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\dataset\\M1_combined_monthly_raw.csv",
+  "reports": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\reports\\data_validation",
+  "dataset_sha256_before": "f35a9cde764724e6a927c48b110a7e3b53301a0d1f808486b13f2e70bd380f03",
+  "dataset_sha256_after": "f35a9cde764724e6a927c48b110a7e3b53301a0d1f808486b13f2e70bd380f03",
+  "raw_rows": 302,
+  "raw_columns": 77,
+  "unique_months": 300,
+  "date_min": "2000-01",
+  "date_max": "2024-12",
+  "target": "TB_Total_Exports",
+  "unit_column": "TB_Quantity_Unit",
+  "unit_counts": {
+    "kg": 230,
+    "mn_kg": 72
+  },
+  "missing_target_count": 6,
+  "exact_duplicate_rows_in_duplicate_groups": 4,
+  "duplicate_month_rows": 4,
+  "duplicate_months": 2,
+  "missing_calendar_months": [],
+  "rainfall_sentinel_counts": {
+    "RAIN_Badulla": 5,
+    "RAIN_Nuwara_Eliya": 1,
+    "RAIN_Ratnapura": 3
+  },
+  "provenance_classification": "Mixed provenance",
+  "provenance_qualification": "Based on FX_origin labels; labels are not independently authenticated.",
+  "conversion_rule_audited": "kg values divided by 1,000,000 into a derived field; raw target is never overwritten."
+}

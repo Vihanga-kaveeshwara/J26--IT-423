@@ -1,0 +1,17 @@
+feature,feature_group,available_at_origin,future_target_used,notes
+target_lag_1,target_lag,True,False,Derived only from target observations at or before origin; label is separate.
+target_lag_3,target_lag,True,False,Derived only from target observations at or before origin; label is separate.
+target_lag_6,target_lag,True,False,Derived only from target observations at or before origin; label is separate.
+target_lag_12,target_lag,True,False,Derived only from target observations at or before origin; label is separate.
+target_rolling_mean_3,past_rolling,True,False,Derived only from target observations at or before origin; label is separate.
+target_rolling_std_3,past_rolling,True,False,Derived only from target observations at or before origin; label is separate.
+target_rolling_mean_6,past_rolling,True,False,Derived only from target observations at or before origin; label is separate.
+target_rolling_std_6,past_rolling,True,False,Derived only from target observations at or before origin; label is separate.
+target_rolling_mean_12,past_rolling,True,False,Derived only from target observations at or before origin; label is separate.
+target_rolling_std_12,past_rolling,True,False,Derived only from target observations at or before origin; label is separate.
+target_change_1,historical_change,True,False,Derived only from target observations at or before origin; label is separate.
+target_pct_change_1,historical_change,True,False,Derived only from target observations at or before origin; label is separate.
+target_month,target_calendar,True,False,Derived only from target observations at or before origin; label is separate.
+target_month_sin,target_calendar,True,False,Derived only from target observations at or before origin; label is separate.
+target_month_cos,target_calendar,True,False,Derived only from target observations at or before origin; label is separate.
+origin_time_index,time_trend,True,False,Derived only from target observations at or before origin; label is separate.

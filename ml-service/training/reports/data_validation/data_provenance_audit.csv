@@ -1,0 +1,4 @@
+evidence_type,evidence_path,field,observed_value,count,provenance_classification,supports,verification_limit
+dataset_metadata,training/dataset/M1_combined_monthly_raw.csv,FX_origin,synthetic,170.0,Mixed provenance,The file explicitly labels rows with more than one origin category.,Metadata labels are not independently authenticated source documentation.
+dataset_metadata,training/dataset/M1_combined_monthly_raw.csv,FX_origin,real_cbsl,132.0,Mixed provenance,The file explicitly labels rows with more than one origin category.,Metadata labels are not independently authenticated source documentation.
+project_documentation,training/reports/preprocessing/preprocessing_decisions.md,target_units_and_provenance,Source semantics require confirmation; raw CSV is preserved.,,Mixed provenance,Project documentation records unresolved unit and source questions.,"No provider URL, extraction note, or official definition is established by this file."

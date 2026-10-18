@@ -1,0 +1,27 @@
+{
+  "horizon_months": 12,
+  "feature_columns": [
+    "target_lag_1",
+    "target_lag_3",
+    "target_lag_6",
+    "target_lag_12",
+    "target_rolling_mean_3",
+    "target_rolling_std_3",
+    "target_rolling_mean_6",
+    "target_rolling_std_6",
+    "target_rolling_mean_12",
+    "target_rolling_std_12",
+    "target_change_1",
+    "target_pct_change_1",
+    "target_month",
+    "target_month_sin",
+    "target_month_cos",
+    "origin_time_index"
+  ],
+  "target_column": "_target_model_mn_kg",
+  "label_definition": "target at origin + 12 months",
+  "rolling_definition": "shift(1) before rolling; current target excluded",
+  "duplicate_policy": "exact duplicate copies removed only in experiment view; no month aggregation",
+  "zero_denominator_policy": "percentage change is NaN when prior target is zero or missing",
+  "raw_exogenous_policy": "excluded pending forecast-origin availability evidence"
+}

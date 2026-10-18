@@ -30,7 +30,7 @@ This document tracks all implementation phases, verification tests, and Git comm
 | **Phase 7** | Optimization workspace & results | `cfbc022` | `feat: connect M4 planning workspace to optimization results` | Scenario CRUD API, workspace parameter form, allocations table, CSV & PDF export | **VERIFIED** |
 | **Phase 8** | Sensitivity analysis & quarterly backtesting | `2b4aed3` | `feat: add M4 sensitivity analysis and quarterly backtesting` | Parametric sweep API, 12-quarter empirical backtesting history, thesis KPI checks | **VERIFIED** |
 | **Phase 9** | M4 model tracking & research evaluation | `815b107` | `feat: add M4 model tracking and research evaluation` | Model registry API (`M4-MILP-v1.0`), research documentation & disclaimer | **VERIFIED** |
-| **Phase 10** | Quality assurance & local setup validation | Pending | `test: validate M4 workflows and document local setup` | Full QA audit, production build validation, local setup documentation | **VERIFIED** |
+| **Phase 10** | Quality assurance & local setup validation | `ff63085` | `test: validate M4 workflows and document local setup` | Full QA audit, production build validation, local setup documentation | **VERIFIED** |
 
 ---
 

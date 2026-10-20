@@ -1,0 +1,9 @@
+duplicate_type,source_row,date,parsed_period,target_value
+exact_duplicate_row,85,2007-02,2007-02,23751669.0
+exact_duplicate_row,86,2007-02,2007-02,23751669.0
+exact_duplicate_row,118,2009-10,2009-10,26433250.0
+exact_duplicate_row,119,2009-10,2009-10,26433250.0
+duplicate_month,85,2007-02,2007-02,23751669.0
+duplicate_month,86,2007-02,2007-02,23751669.0
+duplicate_month,118,2009-10,2009-10,26433250.0
+duplicate_month,119,2009-10,2009-10,26433250.0

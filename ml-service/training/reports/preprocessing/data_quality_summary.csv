@@ -1,0 +1,12 @@
+metric,value,notes
+raw_rows,302,physical records in source CSV
+raw_columns,77,source columns
+invalid_dates,0,Date values that failed parsing
+exact_duplicate_rows_after_first,2,duplicated() count; no rows removed
+records_in_duplicate_month_groups,4,all records in repeated month groups
+duplicated_month_periods,2,unique repeated year-month periods
+missing_months_in_range,0,unique-month coverage
+missing_columns,51,columns with at least one missing value
+high_missing_columns_at_least_20pct,4,flagged for domain review
+constant_columns,3,not automatically removed
+high_correlation_pairs_at_least_90pct,27,not used for automatic selection

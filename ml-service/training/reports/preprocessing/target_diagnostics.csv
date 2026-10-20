@@ -1,0 +1,2 @@
+target,rows,missing_count,non_numeric_count,zero_count,negative_count,valid_count,unique_valid_values,minimum,maximum,mean,median,q01,q25,q75,q99,unit_note
+TB_Total_Exports,302,6,0,0,0,296,293,18.347,268776910.0,20236385.775489867,22765246.5,20.20875,15180849.5,25282832.0,40925493.50000239,mn_kg from observed TB_Quantity_Unit values; verify source definition before modeling

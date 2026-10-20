@@ -1,0 +1,7 @@
+tea_grade,category,avg_price_lkr_per_kg,note
+OP,made_tea,1420,"High-grown orthodox, premium"
+FBOP,made_tea,1280,Orthodox leafy grade
+BOP,made_tea,1100,CTC main grade
+BOPF,made_tea,980,CTC/orthodox semi-leafy
+PEKOE,made_tea,900,Mid grade
+DUST,refuse_grade,430,Lowest grade / refuse resale price if sold

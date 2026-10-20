@@ -1,0 +1,2 @@
+first_period,last_period,unique_periods,expected_periods_in_range,missing_period_count,missing_periods,frequency_assessment
+2000-01,2024-12,300,300,0,,monthly with complete unique-month coverage

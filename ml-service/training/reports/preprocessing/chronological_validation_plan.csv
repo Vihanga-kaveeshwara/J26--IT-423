@@ -1,0 +1,4 @@
+partition,start,end,purpose
+train,2000-01,2020-12,fit transformations and models
+validation,2021-01,2022-12,model selection; never fit transformations here
+test,2023-01,2024-12,final 12-month-horizon evaluation

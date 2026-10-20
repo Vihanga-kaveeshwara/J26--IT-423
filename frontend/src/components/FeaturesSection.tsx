@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import {
   TrendingUp,
   Factory,
@@ -122,9 +123,19 @@ function FeatureCard({ feature, delay }: { feature: Feature; delay: number }) {
       </p>
 
       {/* Bottom link */}
-      <div className="mt-6 flex items-center gap-1.5 text-emerald-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        Learn more <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-      </div>
+      {feature.id === 'M2' ? (
+        <Link
+          to="/batches"
+          className="mt-6 inline-flex items-center gap-1.5 text-gold-400 hover:text-gold-300 text-sm font-semibold transition-colors"
+        >
+          <span>Launch M2 Refuse Predictor</span>
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </Link>
+      ) : (
+        <div className="mt-6 flex items-center gap-1.5 text-emerald-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          Learn more <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </div>
+      )}
     </div>
   );
 }

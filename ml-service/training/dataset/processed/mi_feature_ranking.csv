@@ -1,0 +1,26 @@
+feature,mi_score,group
+machine_downtime_log,0.1293206635466575,individual
+machine_downtime_hrs,0.11376964937450795,individual
+relative_humidity_pct,0.0966666018267679,individual
+withering_duration_bucket,0.08858132005405883,individual
+ambient_temperature_c,0.07204156659193384,individual
+withering_duration_hrs,0.07083897516891069,individual
+green_leaf_input_kg,0.06258178473423515,individual
+rolling_ambient_temp_3batch,0.053304059145044214,individual
+withering_deviation,0.049481721269616585,individual
+plucking_fine_leaf_pct,0.04885909096838059,individual
+tea_grade_produced_PEKOE,0.04872589338584499,tea_grade_produced
+tea_grade_produced_FBOP,0.03507921286606863,tea_grade_produced
+rolling_humidity_3batch,0.02911409734307613,individual
+region_Uva,0.022045860810238294,region
+month,0.015505656890780983,individual
+tea_grade_produced_OP,0.005529918240532616,tea_grade_produced
+month_cos,0.0030184707359635077,individual
+dryer_temperature_c,0.0,individual
+dryer_deviation,0.0,individual
+region_Nuwara Eliya,0.0,region
+month_sin,0.0,individual
+season_SW_MONSOON,0.0,season
+season_NE_MONSOON,0.0,season
+tea_grade_produced_BOPF,0.0,tea_grade_produced
+tea_grade_produced_DUST,0.0,tea_grade_produced

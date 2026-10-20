@@ -7,3 +7,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Batch {
+  id                             String   @id @default(uuid())
+  batch_id                       String   @unique
+  factory_id                     String
+  region                         String
+  elevation_band                 String?
+  batch_date                     DateTime
+  month                          Int?
+  season                         String?
+  source                         String   @default("operator_submitted") // 'synthetic_seed' or 'operator_submitted'
+
+  // Raw operational inputs
+  green_leaf_input_kg            Float
+  withering_duration_hrs         Float
+  dryer_temperature_c            Float
+  machine_downtime_hrs           Float    @default(0.0)
+  plucking_fine_leaf_pct         Float
+  relative_humidity_pct          Float
+  ambient_temperature_c          Float
+
+  // Commercial / Output fields
+  tea_grade_produced             String
+  refuse_resale_status           String   @default("DISCARDED")
+  made_tea_output_kg             Float?
+  refuse_tea_kg                  Float?
+  actual_refuse_tea_pct          Float?
+
+  // Rolling features applied at inference
+  rolling_humidity_3batch        Float?
+  rolling_ambient_temp_3batch    Float?
+  used_fallback_rolling_features Boolean  @default(false)
+
+  // ML outputs (JSONB for complex nested structures)
+  predicted_refuse_tea_pct       Float?
+  top_shap_drivers               Json?
+  mitigations                    Json?
+  economic_impact                Json?
+
+  created_at                     DateTime @default(now())
+  updated_at                     DateTime @updatedAt
+
+  @@index([factory_id, batch_date])
+  @@index([batch_date])
+  @@index([source])
+  @@map("batches")
+}

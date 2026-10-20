@@ -1,0 +1,2 @@
+baseline,formula,horizon,status
+seasonal_naive_12,prediction at origin + h = observed target at origin + h - 12 months,12,specification only; no evaluation performed

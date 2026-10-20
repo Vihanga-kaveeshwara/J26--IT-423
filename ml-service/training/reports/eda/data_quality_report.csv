@@ -1,0 +1,78 @@
+column,dtype,role,rows,missing_count,missing_pct,unique_values_including_missing,constant,blank_string_count,negative_count,zero_count,min,max,suspected_outlier_count_iqr,quality_notes
+Date,object,date-like,302,0,0.0,300,False,0,0,0,,,0,
+TB_Bulk_Tea,float64,numeric,302,3,0.993,297,False,0,0,0,9.597,15739416.0,71,missing values; IQR outliers
+TB_Packets,float64,numeric,302,3,0.993,298,False,0,0,0,6.144,10838723.0,71,missing values; IQR outliers
+TB_Tea_Bags,float64,numeric,302,3,0.993,294,False,0,0,0,1.976,3829956.0,71,missing values; IQR outliers
+TB_Instant_Tea,float64,numeric,302,3,0.993,288,False,0,0,0,0.388,789380.0,71,missing values; IQR outliers
+TB_Green_Tea,float64,numeric,302,3,0.993,274,False,0,0,0,0.189,303069.0,71,missing values; IQR outliers
+TB_Total_Exports,float64,numeric,302,6,1.987,294,False,0,0,0,18.347,268776910.0,74,missing values; IQR outliers
+TB_Quantity_Unit,object,categorical,302,0,0.0,2,False,0,0,0,,,0,
+TB_Export_Value_Rs_Mn,float64,numeric,302,8,2.649,293,False,0,0,0,4120.33,44291.77,19,missing values; IQR outliers
+CT_World_netWgt,float64,numeric,302,7,2.318,294,False,0,0,0,18154.673,32990087.0,12,missing values; IQR outliers
+CT_World_unit,object,categorical,302,7,2.318,3,False,0,0,0,,,0,missing values
+CT_World_value_USD,float64,numeric,302,17,5.629,284,False,0,0,0,43150609.0,155681223.0,0,missing values
+CT_kg_Azerbaijan,float64,numeric,302,15,4.967,286,False,0,0,0,514083.0,1582926.0,2,missing values; IQR outliers
+CT_kg_Chile,float64,numeric,302,19,6.291,282,False,0,0,0,492478.0,1265769.0,2,missing values; IQR outliers
+CT_kg_Iran,float64,numeric,302,14,4.636,287,False,0,0,0,374369.0,2455124.0,0,missing values
+CT_kg_Iraq,float64,numeric,302,11,3.642,290,False,0,0,0,1616596.0,4419889.0,0,missing values
+CT_kg_Japan,float64,numeric,302,11,3.642,290,False,0,0,0,611692.0,2151012.0,3,missing values; IQR outliers
+CT_kg_Libya,float64,numeric,302,14,4.636,287,False,0,0,0,429651.0,1531309.0,1,missing values; IQR outliers
+CT_kg_Russian_Federation,float64,numeric,302,18,5.96,283,False,0,0,0,947101.0,3841135.0,8,missing values; IQR outliers
+CT_kg_Syrian_Arab_Republic,float64,numeric,302,11,3.642,290,False,0,0,0,192950.0,1530425.0,0,missing values
+CT_kg_Turkiye,float64,numeric,302,11,3.642,290,False,0,0,0,1389233.0,3676506.0,4,missing values; IQR outliers
+CT_kg_United_Arab_Emirates,float64,numeric,302,9,2.98,292,False,0,0,0,1590021.0,4179735.0,4,missing values; IQR outliers
+AUC_n_sale_weeks_held,int64,numeric,302,0,0.0,5,False,0,0,1,0,5,2,IQR outliers
+AUC_n_sale_weeks_no_sale,int64,numeric,302,0,0.0,4,False,0,0,250,0,4,0,
+AUC_n_rows_price_in_USD,int64,numeric,302,0,0.0,3,False,0,0,263,0,2,0,
+AUC_n_rows_qty_in_MT,int64,numeric,302,0,0.0,3,False,0,0,225,0,2,0,
+AUC_n_held_rows_price_missing,int64,numeric,302,0,0.0,5,False,0,0,247,0,4,0,
+AUC_High_price_mean,float64,numeric,302,1,0.331,300,False,0,0,0,154.73000000000002,2080.3875,33,missing values; IQR outliers
+AUC_High_price_std,float64,numeric,302,1,0.331,300,False,0,0,0,1.275133979888644,2268.136349898304,34,missing values; IQR outliers
+AUC_High_qty_sum,float64,numeric,302,1,0.331,300,False,0,0,0,2561897.912,7647021.0,4,missing values; IQR outliers
+AUC_Medium_price_mean,float64,numeric,302,2,0.662,299,False,0,0,0,116.9,2504.6200000000003,34,missing values; IQR outliers
+AUC_Medium_price_std,float64,numeric,302,2,0.662,299,False,0,0,0,1.1418406193510455,3231.124665561513,36,missing values; IQR outliers
+AUC_Medium_qty_sum,float64,numeric,302,1,0.331,300,False,0,0,0,824288.2660000001,3745710.0,2,missing values; IQR outliers
+AUC_Low_price_mean,float64,numeric,302,1,0.331,300,False,0,0,0,197.82,2222.95,31,missing values; IQR outliers
+AUC_Low_price_std,float64,numeric,302,1,0.331,300,False,0,0,0,0.7530161574185117,887.46408965659,25,missing values; IQR outliers
+AUC_Low_qty_sum,float64,numeric,302,1,0.331,300,False,0,0,0,6612739.8,20164934.0,0,missing values
+ONI_season,object,categorical,302,0,0.0,12,False,0,0,0,,,0,
+ONI_total,float64,numeric,302,0,0.0,200,False,0,0,0,25.1,29.25,3,IQR outliers
+ONI_anom,float64,numeric,302,0,0.0,176,False,0,150,6,-1.53,2.49,5,negative numeric values; IQR outliers
+RAIN_Badulla,float64,numeric,302,13,4.305,269,False,0,5,0,-999.0,697.0,16,missing values; negative numeric values; IQR outliers
+RAIN_Nuwara_Eliya,float64,numeric,302,13,4.305,280,False,0,1,0,-999.0,3247.0,9,missing values; negative numeric values; IQR outliers
+RAIN_Ratnapura,float64,numeric,302,8,2.649,285,False,0,3,0,-999.0,1009.0,12,missing values; negative numeric values; IQR outliers
+RAIN_unit_Badulla,object,categorical,302,0,0.0,2,False,0,0,0,,,0,
+RAIN_unit_Nuwara_Eliya,object,categorical,302,0,0.0,2,False,0,0,0,,,0,
+RAIN_unit_Ratnapura,object,categorical,302,0,0.0,2,False,0,0,0,,,0,
+FX_USD_LKR,float64,numeric,302,0,0.0,300,False,0,0,0,76.678599,363.394048,34,IQR outliers
+FX_origin,object,categorical,302,0,0.0,2,False,0,0,0,,,0,
+CPI_base_2006_07,float64,numeric,302,123,40.728,178,False,0,0,0,51.9,196.7,0,missing values
+CPI_base_2013,float64,numeric,302,158,52.318,142,False,0,0,0,97.1,255.4,25,missing values; IQR outliers
+COMP_China,float64,numeric,302,12,3.974,287,False,0,0,0,14533.0,33842.0,0,missing values
+COMP_India,float64,numeric,302,14,4.636,284,False,0,0,0,13281.0,25385.0,0,missing values
+COMP_Kenya,float64,numeric,302,12,3.974,286,False,0,0,0,15489.0,52452.0,0,missing values
+COMP_Vietnam,float64,numeric,302,12,3.974,286,False,0,0,0,3114.0,9526000.0,47,missing values; IQR outliers
+COMP_unit_China,object,categorical,302,0,0.0,1,True,0,0,0,,,0,constant/near-zero cardinality
+COMP_unit_India,object,categorical,302,0,0.0,1,True,0,0,0,,,0,constant/near-zero cardinality
+COMP_unit_Kenya,object,categorical,302,0,0.0,1,True,0,0,0,,,0,constant/near-zero cardinality
+COMP_unit_Vietnam,object,categorical,302,0,0.0,2,False,0,0,0,,,0,
+GDP_Azerbaijan,float64,numeric,302,12,3.974,25,False,0,37,0,-1.33,12.11,0,missing values; negative numeric values
+GDP_Chile,float64,numeric,302,0,0.0,25,False,0,12,0,-1.24,6.05,49,negative numeric values; IQR outliers
+GDP_Iran,float64,numeric,302,12,3.974,25,False,0,49,0,-3.31,5.79,0,missing values; negative numeric values
+GDP_Iraq,float64,numeric,302,48,15.894,22,False,0,0,0,1.23,10.19,0,missing values
+GDP_Japan,float64,numeric,302,0,0.0,23,False,0,61,0,-3.42,2.74,24,negative numeric values; IQR outliers
+GDP_Libya,float64,numeric,302,24,7.947,24,False,0,97,0,-9.94,16.09,0,missing values; negative numeric values
+GDP_Russian_Federation,float64,numeric,302,0,0.0,24,False,0,24,0,-1.82,7.78,0,negative numeric values
+GDP_Syrian_Arab_Republic,float64,numeric,302,156,51.656,13,False,0,12,0,-0.26,8.52,12,missing values; negative numeric values; IQR outliers
+GDP_Turkiye,float64,numeric,302,12,3.974,25,False,0,0,0,1.36,7.33,0,missing values
+GDP_United_Arab_Emirates,float64,numeric,302,12,3.974,25,False,0,37,12,-1.39,6.6,0,missing values; negative numeric values
+INF_Azerbaijan,float64,numeric,302,12,3.974,25,False,0,0,0,1.15,16.78,0,missing values
+INF_Chile,float64,numeric,302,0,0.0,24,False,0,0,0,0.1,11.6,12,IQR outliers
+INF_Iran,float64,numeric,302,24,7.947,24,False,0,0,0,7.03,45.8,0,missing values
+INF_Iraq,float64,numeric,302,0,0.0,24,False,0,24,0,-1.0,19.58,24,negative numeric values; IQR outliers
+INF_Japan,float64,numeric,302,0,0.0,23,False,0,109,0,-1.0,3.3,36,negative numeric values; IQR outliers
+INF_Libya,float64,numeric,302,12,3.974,23,False,0,24,0,-1.0,16.5,0,missing values; negative numeric values
+INF_Russian_Federation,float64,numeric,302,0,0.0,25,False,0,0,0,0.33,25.16,12,IQR outliers
+INF_Syrian_Arab_Republic,float64,numeric,302,156,51.656,13,False,0,0,0,0.86,11.24,0,missing values
+INF_Turkiye,float64,numeric,302,12,3.974,24,False,0,0,0,6.3,72.3,60,missing values; IQR outliers
+INF_United_Arab_Emirates,float64,numeric,302,12,3.974,22,False,0,73,0,-1.0,7.56,0,missing values; negative numeric values

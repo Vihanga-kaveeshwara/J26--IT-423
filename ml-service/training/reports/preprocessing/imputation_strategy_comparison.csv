@@ -1,0 +1,4 @@
+strategy,status,reason
+time_series_interpolation,not applied,Can use future values and is not safe as a default for contemporaneous exogenous data.
+forward_fill,not applied,Requires feature-specific scientific justification and training-boundary controls.
+training_only_median_or_mode,"prepared, not fitted",Use build_training_preprocessor and fit separately inside each chronological training fold.

@@ -1,0 +1,4 @@
+model,rmse,rmse_target (<1.0%),mae,mae_target (<0.75%),r2,r2_target (>0.85),mape,mape_target (<8.0%)
+Static_6.0_Baseline,1.7267,FAIL,1.2813,FAIL,-0.1218,FAIL,18.73,FAIL
+RandomForest,1.4944,FAIL,1.083,FAIL,0.1598,FAIL,16.39,FAIL
+XGBoost,1.4539,FAIL,1.0594,FAIL,0.2047,FAIL,16.18,FAIL

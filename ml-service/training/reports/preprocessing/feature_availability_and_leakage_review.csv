@@ -1,0 +1,79 @@
+feature,availability_assessment,leakage_risk,required_action
+TB_Bulk_Tea,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+TB_Packets,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+TB_Tea_Bags,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+TB_Instant_Tea,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+TB_Green_Tea,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+TB_Quantity_Unit,metadata; verify availability,low,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+TB_Export_Value_Rs_Mn,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CT_World_netWgt,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CT_World_unit,metadata; verify availability,low,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CT_World_value_USD,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CT_kg_Azerbaijan,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CT_kg_Chile,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CT_kg_Iran,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CT_kg_Iraq,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CT_kg_Japan,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CT_kg_Libya,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CT_kg_Russian_Federation,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CT_kg_Syrian_Arab_Republic,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CT_kg_Turkiye,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CT_kg_United_Arab_Emirates,metadata; verify availability,low,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_n_sale_weeks_held,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_n_sale_weeks_no_sale,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_n_rows_price_in_USD,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_n_rows_qty_in_MT,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_n_held_rows_price_missing,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_High_price_mean,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_High_price_std,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_High_qty_sum,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_Medium_price_mean,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_Medium_price_std,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_Medium_qty_sum,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_Low_price_mean,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_Low_price_std,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+AUC_Low_qty_sum,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+ONI_season,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+ONI_total,potentially contemporaneous; require timestamp/business confirmation,high,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+ONI_anom,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+RAIN_Badulla,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+RAIN_Nuwara_Eliya,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+RAIN_Ratnapura,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+RAIN_unit_Badulla,metadata; verify availability,low,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+RAIN_unit_Nuwara_Eliya,metadata; verify availability,low,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+RAIN_unit_Ratnapura,metadata; verify availability,low,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+FX_USD_LKR,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+FX_origin,metadata; verify availability,low,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CPI_base_2006_07,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+CPI_base_2013,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+COMP_China,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+COMP_India,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+COMP_Kenya,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+COMP_Vietnam,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+COMP_unit_China,metadata; verify availability,low,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+COMP_unit_India,metadata; verify availability,low,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+COMP_unit_Kenya,metadata; verify availability,low,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+COMP_unit_Vietnam,metadata; verify availability,low,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+GDP_Azerbaijan,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+GDP_Chile,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+GDP_Iran,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+GDP_Iraq,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+GDP_Japan,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+GDP_Libya,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+GDP_Russian_Federation,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+GDP_Syrian_Arab_Republic,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+GDP_Turkiye,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+GDP_United_Arab_Emirates,metadata; verify availability,low,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+INF_Azerbaijan,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+INF_Chile,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+INF_Iran,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+INF_Iraq,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+INF_Japan,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+INF_Libya,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+INF_Russian_Federation,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+INF_Syrian_Arab_Republic,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+INF_Turkiye,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+INF_United_Arab_Emirates,metadata; verify availability,low,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+_source_row,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+_parsed_date,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it
+_period,candidate exogenous feature; availability still requires source timestamp confirmation,medium,Use only after confirming it is known at the forecast origin; otherwise lag it or exclude it

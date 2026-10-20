@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Menu, X, Leaf } from 'lucide-react';
 
 const navLinks = [
@@ -66,6 +67,14 @@ export function Navbar() {
               </button>
             </li>
           ))}
+          <li>
+            <Link
+              to="/demand-forecast"
+              className="px-3.5 py-2 text-sm font-semibold text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-lg transition-all duration-200 flex items-center gap-1.5"
+            >
+              <span>Demand Forecast</span>
+            </Link>
+          </li>
         </ul>
 
         {/* CTA + hamburger */}
@@ -103,6 +112,15 @@ export function Navbar() {
               </button>
             </li>
           ))}
+          <li>
+            <Link
+              to="/demand-forecast"
+              onClick={() => setMobileOpen(false)}
+              className="w-full text-left px-4 py-3 rounded-lg text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 text-sm font-semibold transition-colors block"
+            >
+              Demand Forecast
+            </Link>
+          </li>
           <li className="pt-2">
             <button
               onClick={() => handleNav('#contact')}

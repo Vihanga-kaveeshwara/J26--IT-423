@@ -2,7 +2,7 @@
 
 Endpoints:
 - POST /api/ml/predict-demand: Direct 12-month ahead demand forecasts with empirical intervals
-- GET  /api/ml/metrics: Verified backtest evaluation metrics, calibration, and limitations
+- GET  /api/ml/metrics: Verified backtest evaluation benchmarks, calibration, and limitations
 - GET  /api/ml/model: Champion architecture, hyperparameters, and feature metadata
 """
 
@@ -33,6 +33,7 @@ _MODEL_BUNDLE: dict[str, Any] | None = None
 _METADATA: dict[str, Any] | None = None
 
 MONTH_REGEX = r"^\d{4}-(0[1-9]|1[0-2])$"
+BACKTEST_PREDS_PATH = Path(__file__).resolve().parent.parent.parent / "training" / "reports" / "backtest_cleaned_v2" / "backtest_predictions.csv"
 
 
 def get_model_bundle() -> dict[str, Any]:
@@ -58,6 +59,50 @@ def get_metadata() -> dict[str, Any]:
         with open(METADATA_FILE, "r", encoding="utf-8") as f:
             _METADATA = json.load(f)
     return _METADATA
+
+
+def get_backtest_bias_summary() -> dict[str, float]:
+    """Compute backtest bias statistics dynamically from the verified predictions file."""
+    if not BACKTEST_PREDS_PATH.exists():
+        return {
+            "pooled_bias": 0.75,
+            "test_2324_bias": 1.77,
+            "share_below_pooled": 63.8,
+            "share_below_test": 78.3,
+        }
+    df = pd.read_csv(BACKTEST_PREDS_PATH)
+    err = df["combo_mean_xgb"] - df["actual"]
+    pooled_bias = float(np.mean(err))
+
+    sub_test = df[df["forecast_year"] >= 2023]
+    err_test = sub_test["combo_mean_xgb"] - sub_test["actual"]
+    test_2324_bias = float(np.mean(err_test))
+
+    share_below_pooled = float(np.mean(df["actual"] < df["combo_mean_xgb"]) * 100)
+    share_below_test = float(np.mean(sub_test["actual"] < sub_test["combo_mean_xgb"]) * 100)
+
+    return {
+        "pooled_bias": round(pooled_bias, 2),
+        "test_2324_bias": round(test_2324_bias, 2),
+        "share_below_pooled": round(share_below_pooled, 1),
+        "share_below_test": round(share_below_test, 1),
+    }
+
+
+def get_coverage_disclaimer() -> str:
+    """Generate disclaimer string dynamically from predictions so numbers never drift."""
+    b = get_backtest_bias_summary()
+    return (
+        "Empirical prediction intervals were calibrated on historical backtests (2018–2024). "
+        "Observed backtest coverage: nominal 80% achieved ~68% overall (~61% during 2023–2024 test phase); "
+        "nominal 90% achieved ~78% in 2023–2024; nominal 50% achieved ~52% overall (~39% in 2023–2024). "
+        f"Systemic over-forecast bias: point forecasts show a mean bias of +{b['pooled_bias']:.2f} mn kg overall "
+        f"(+{b['test_2324_bias']:.2f} mn kg during 2023–2024), "
+        f"with {b['share_below_pooled']:.1f}% of historical actuals falling below the point forecast "
+        f"({b['share_below_test']:.1f}% in 2023–2024). "
+        "Consequently, prediction intervals are calibrated asymmetrically around the point forecast. "
+        "During structural supply shocks or severe macroeconomic disruption, realized coverage may fall below nominal targets."
+    )
 
 
 # -----------------------------------------------------------------------------
@@ -153,17 +198,6 @@ class PredictDemandResponse(BaseModel):
 # Endpoints
 # -----------------------------------------------------------------------------
 
-app_coverage_disclaimer = (
-    "Empirical prediction intervals were calibrated on historical backtests (2018–2024). "
-    "Observed backtest coverage: nominal 80% achieved ~68% overall (~61% during 2023–2024 test phase); "
-    "nominal 90% achieved ~78% in 2023–2024; nominal 50% achieved ~52% overall (~39% in 2023–2024). "
-    "Systemic over-forecast bias: point forecasts show a mean bias of +0.75 mn kg overall (+1.78 mn kg during 2023–2024), "
-    "with 63.8% of historical actuals falling below the point forecast (78.3% in 2023–2024). "
-    "Consequently, prediction intervals are calibrated asymmetrically around the point forecast. "
-    "During structural supply shocks or severe macroeconomic disruption, realized coverage may fall below nominal targets."
-)
-
-
 @router.get("/model")
 def get_model_info() -> dict[str, Any]:
     """Retrieve M1 champion model metadata, architecture, features, and training info."""
@@ -187,6 +221,7 @@ def get_model_info() -> dict[str, Any]:
 def get_metrics_info() -> dict[str, Any]:
     """Retrieve M1 backtest evaluation benchmarks, empirical coverage, bias, and operational limitations."""
     meta = get_metadata()
+    b = get_backtest_bias_summary()
     return {
         "success": True,
         "model_version": meta.get("model_version"),
@@ -200,10 +235,10 @@ def get_metrics_info() -> dict[str, Any]:
             "nominal_50_test_phase_pct": 39.1,
         },
         "bias_and_asymmetry": {
-            "pooled_bias_mn_kg": 0.7477,
-            "test_phase_2023_2024_bias_mn_kg": 1.7663,
-            "share_actuals_below_point_forecast_pooled_pct": 63.82,
-            "share_actuals_below_point_forecast_test_phase_pct": 78.26,
+            "pooled_bias_mn_kg": b["pooled_bias"],
+            "test_phase_2023_2024_bias_mn_kg": b["test_2324_bias"],
+            "share_actuals_below_point_forecast_pooled_pct": b["share_below_pooled"],
+            "share_actuals_below_point_forecast_test_phase_pct": b["share_below_test"],
             "interval_symmetry": "asymmetric (calibrated via empirical error quantiles to adjust for positive over-forecast bias)",
             "protocol_note": "Direct h=12 forecasting: target T is forecast from data up to T-12 only. Recently appended actuals only affect target months >= appended_date + 12 months.",
         },
@@ -362,7 +397,7 @@ def predict_demand(payload: PredictDemandRequest) -> PredictDemandResponse:
         success=True,
         model_version=bundle.get("version", "1.0.0"),
         latest_actual_month=effective_end_dt.strftime("%Y-%m"),
-        disclaimer=app_coverage_disclaimer,
+        disclaimer=get_coverage_disclaimer(),
         warnings=warnings_list,
         overrides_applied=overrides_list,
         predictions=predictions,

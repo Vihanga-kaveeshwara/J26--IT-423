@@ -4,6 +4,7 @@ M1 Component: Tea Export Demand Forecasting
 FastAPI Serving Layer (main.py)
 """
 
+import logging
 import os
 from contextlib import asynccontextmanager
 from typing import Dict, Any, List
@@ -12,6 +13,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+logger = logging.getLogger("uvicorn.error")
+
 try:
     from app.services.model_service import get_model_service
     from app.api.predict import router as predict_router
@@ -19,8 +22,9 @@ try:
     from app.api.economic import router as economic_router
     from app.api.whatif import router as whatif_router
     HAS_M2 = True
-except ImportError:
+except ImportError as exc:
     HAS_M2 = False
+    logger.warning("M2 Refuse-Tea modules not available on this branch: %s", exc)
 
 from app.routers.m1_demand import router as m1_demand_router
 
@@ -88,6 +92,8 @@ def health_check() -> Dict[str, Any]:
         return {
             "status": "healthy",
             "service": "m2_refuse_tea_prediction",
+            "m1_loaded": True,
+            "m2_loaded": True,
             "model_name": meta.get("model_name", "unknown"),
             "model_class": meta.get("model_class", "unknown"),
             "training_date_utc": meta.get("training_date_utc", "unknown"),
@@ -100,6 +106,8 @@ def health_check() -> Dict[str, Any]:
         "status": "healthy",
         "service": "m1_tea_export_demand_forecasting",
         "m1_model_name": "m1_demand_forecast_v1",
+        "m1_loaded": True,
+        "m2_loaded": False,
         "version": "1.0.0",
     }
 
@@ -115,6 +123,8 @@ def backend_compat_health() -> Dict[str, Any]:
         "success": True,
         "status": "healthy",
         "message": "ML service is running",
+        "m1_loaded": True,
+        "m2_loaded": HAS_M2,
         "model_name": "m1_demand_forecast_v1" if not HAS_M2 else "m2_refuse_tea_xgb_v1",
     }
 

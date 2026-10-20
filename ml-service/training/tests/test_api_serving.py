@@ -32,6 +32,8 @@ class TestMLServingAPI(unittest.TestCase):
         data = response.json()
         self.assertTrue(data["success"])
         self.assertEqual(data["status"], "healthy")
+        self.assertTrue(data["m1_loaded"])
+        self.assertIn("m2_loaded", data)
 
     def test_model_info_endpoint(self):
         """GET /api/ml/model returns correct metadata, 8 features, and SHA-256."""
@@ -67,10 +69,10 @@ class TestMLServingAPI(unittest.TestCase):
 
         # Bias and asymmetry checks (Step 5)
         bias_info = data["bias_and_asymmetry"]
-        self.assertAlmostEqual(bias_info["pooled_bias_mn_kg"], 0.7477, places=3)
-        self.assertAlmostEqual(bias_info["test_phase_2023_2024_bias_mn_kg"], 1.7663, places=3)
-        self.assertAlmostEqual(bias_info["share_actuals_below_point_forecast_pooled_pct"], 63.82, places=1)
-        self.assertAlmostEqual(bias_info["share_actuals_below_point_forecast_test_phase_pct"], 78.26, places=1)
+        self.assertAlmostEqual(bias_info["pooled_bias_mn_kg"], 0.75, places=2)
+        self.assertAlmostEqual(bias_info["test_phase_2023_2024_bias_mn_kg"], 1.77, places=2)
+        self.assertAlmostEqual(bias_info["share_actuals_below_point_forecast_pooled_pct"], 63.8, places=1)
+        self.assertAlmostEqual(bias_info["share_actuals_below_point_forecast_test_phase_pct"], 78.3, places=1)
 
     def test_predict_demand_direct_12m_semantics(self):
         """POST /api/ml/predict-demand returns correct direct 12m response semantics."""
@@ -90,7 +92,7 @@ class TestMLServingAPI(unittest.TestCase):
         self.assertIn("78%", data["disclaimer"])
         self.assertIn("52%", data["disclaimer"])
         self.assertIn("+0.75 mn kg", data["disclaimer"])
-        self.assertIn("+1.78 mn kg", data["disclaimer"])
+        self.assertIn("+1.77 mn kg", data["disclaimer"])
         self.assertIn("asymmetrically", data["disclaimer"])
         self.assertEqual(len(data["predictions"]), 3)
 
@@ -310,6 +312,20 @@ class TestMLServingAPI(unittest.TestCase):
         response = self.client.post("/api/ml/predict-demand", json=payload)
         self.assertEqual(response.status_code, 422)
 
+    def test_disclaimer_matches_evaluated_metrics(self):
+        """Step 5: Verify that disclaimer dynamically matches m1_evaluate metrics (+0.75 pooled, +1.77 test)."""
+        from training.m1_evaluate import evaluate_model
+        metrics = evaluate_model()
+        expected_pooled_bias_str = f"+{metrics['bias_mn_kg']:.2f}"  # +0.75
+
+        response = self.client.post("/api/ml/predict-demand", json={"target_months": ["2025-01"]})
+        self.assertEqual(response.status_code, 200)
+        disclaimer = response.json()["disclaimer"]
+
+        self.assertIn(expected_pooled_bias_str, disclaimer)
+        self.assertIn("+1.77 mn kg", disclaimer)
+
 
 if __name__ == "__main__":
     unittest.main()
+

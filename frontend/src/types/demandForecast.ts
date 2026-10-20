@@ -25,6 +25,7 @@ export interface MonthForecast {
   uses_appended_data: boolean;
   interval_50: IntervalInfo;
   interval_80: IntervalInfo;
+  interval_90?: IntervalInfo;
   component_forecasts: ComponentForecasts;
 }
 

@@ -2,12 +2,10 @@
  * Demand Forecast Native SVG Chart Component
  * frontend/src/components/m1/DemandForecastChart.tsx
  *
- * Renders a responsive SVG chart featuring:
- * - 80% Confidence Interval Band (shaded)
- * - 50% Confidence Interval Band (shaded)
- * - Point Forecast Line & Markers
- * - Optional Historical Actuals Line
- * - Hover Tooltip with Point, Intervals, and Ensemble Components
+ * Simplified Layer 1 View:
+ * - Expected point forecast line & markers
+ * - Single 80% Likely Range Shaded Band
+ * - Clean hover tooltip (Month, Expected value, Likely range)
  */
 
 import React, { useState } from 'react';
@@ -39,12 +37,12 @@ export const DemandForecastChart: React.FC<DemandForecastChartProps> = ({
 
   // Chart dimensions & margins
   const width = 800;
-  const height = 360;
+  const height = 340;
   const margin = { top: 30, right: 40, bottom: 50, left: 60 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
-  // Compute value extremes across intervals and actuals
+  // Compute value extremes across 80% interval and actuals
   let minVal = Infinity;
   let maxVal = -Infinity;
 
@@ -58,7 +56,7 @@ export const DemandForecastChart: React.FC<DemandForecastChartProps> = ({
     maxVal = Math.max(maxVal, h.actual_mn_kg);
   });
 
-  // Add 10% vertical padding
+  // Vertical padding
   const valRange = maxVal - minVal || 5;
   const domainMin = Math.max(0, Math.floor(minVal - valRange * 0.15));
   const domainMax = Math.ceil(maxVal + valRange * 0.15);
@@ -75,10 +73,8 @@ export const DemandForecastChart: React.FC<DemandForecastChartProps> = ({
     return margin.top + innerHeight - ((val - domainMin) / domainSpan) * innerHeight;
   };
 
-  // Generate paths for bands and line
-  // 80% Band Polygon
+  // Generate paths for 80% likely range band and expected line
   let band80Path = '';
-  let band50Path = '';
   let linePath = '';
 
   if (count > 1) {
@@ -89,14 +85,6 @@ export const DemandForecastChart: React.FC<DemandForecastChartProps> = ({
       .reverse()
       .map((p, idx) => `${getX(count - 1 - idx)},${getY(p.interval_80.lower_mn_kg)}`);
     band80Path = `M ${top80.join(' L ')} L ${bot80.join(' L ')} Z`;
-
-    // Top of 50%
-    const top50 = predictions.map((p, idx) => `${getX(idx)},${getY(p.interval_50.upper_mn_kg)}`);
-    // Bottom of 50% (reversed)
-    const bot50 = [...predictions]
-      .reverse()
-      .map((p, idx) => `${getX(count - 1 - idx)},${getY(p.interval_50.lower_mn_kg)}`);
-    band50Path = `M ${top50.join(' L ')} L ${bot50.join(' L ')} Z`;
 
     // Forecast line
     linePath = `M ${predictions.map((p, idx) => `${getX(idx)},${getY(p.point_forecast_mn_kg)}`).join(' L ')}`;
@@ -120,25 +108,21 @@ export const DemandForecastChart: React.FC<DemandForecastChartProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-white/10">
         <div>
           <h4 className="text-sm font-semibold text-white tracking-wide">
-            Export Demand Forecast & Uncertainty Bands
+            Export Demand Forecast & Likely Range
           </h4>
           <p className="text-xs text-white/60">
-            Ensemble point forecast (Mn kg) with 50% and 80% calibrated empirical intervals
+            Expected monthly exports (Mn kg) with 80% likely range
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-4 text-xs font-medium">
           <div className="flex items-center gap-1.5">
             <span className="w-3.5 h-1 bg-emerald-400 rounded-full inline-block" />
-            <span className="text-white/80">Point Forecast</span>
+            <span className="text-white/80">Expected</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-3.5 h-3 bg-emerald-500/25 border border-emerald-500/40 rounded-sm inline-block" />
-            <span className="text-white/80">50% Interval</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-3.5 h-3 bg-emerald-400/10 border border-emerald-400/20 rounded-sm inline-block" />
-            <span className="text-white/80">80% Interval</span>
+            <span className="w-3.5 h-3 bg-emerald-400/15 border border-emerald-400/35 rounded-sm inline-block" />
+            <span className="text-white/80">Likely Range (80%)</span>
           </div>
           {history.length > 0 && (
             <div className="flex items-center gap-1.5">
@@ -157,12 +141,8 @@ export const DemandForecastChart: React.FC<DemandForecastChartProps> = ({
         >
           <defs>
             <linearGradient id="band80Grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#10b981" stopOpacity="0.18" />
+              <stop offset="0%" stopColor="#10b981" stopOpacity="0.22" />
               <stop offset="100%" stopColor="#10b981" stopOpacity="0.08" />
-            </linearGradient>
-            <linearGradient id="band50Grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#34d399" stopOpacity="0.32" />
-              <stop offset="100%" stopColor="#059669" stopOpacity="0.20" />
             </linearGradient>
           </defs>
 
@@ -216,23 +196,7 @@ export const DemandForecastChart: React.FC<DemandForecastChartProps> = ({
             />
           )}
 
-          {/* Shaded 50% Band */}
-          {count > 1 ? (
-            <path d={band50Path} fill="url(#band50Grad)" />
-          ) : (
-            <line
-              x1={getX(0)}
-              y1={getY(predictions[0].interval_50.lower_mn_kg)}
-              x2={getX(0)}
-              y2={getY(predictions[0].interval_50.upper_mn_kg)}
-              stroke="#34d399"
-              strokeWidth="6"
-              strokeOpacity="0.4"
-              strokeLinecap="round"
-            />
-          )}
-
-          {/* Point Forecast Line */}
+          {/* Point Forecast Line (Expected) */}
           {count > 1 && (
             <path
               d={linePath}
@@ -302,10 +266,11 @@ export const DemandForecastChart: React.FC<DemandForecastChartProps> = ({
           })}
         </svg>
 
-        {/* Hover Details Card (Floating Tooltip) */}
+        {/* Hover Details Card (Simplified Plain Floating Tooltip) */}
         {activePred && hoverIndex !== null && (
           <div
-            className="absolute top-4 right-6 bg-forest-950/95 backdrop-blur-md border border-emerald-500/40 rounded-xl p-3.5 shadow-2xl z-20 text-xs w-64 pointer-events-none transition-all duration-200"
+            data-testid="chart-tooltip"
+            className="absolute top-4 right-6 bg-forest-950/95 backdrop-blur-md border border-emerald-500/40 rounded-xl p-3.5 shadow-2xl z-20 text-xs w-60 pointer-events-none transition-all duration-200"
           >
             <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-white/10">
               <span className="font-semibold text-emerald-300 text-sm">
@@ -318,50 +283,17 @@ export const DemandForecastChart: React.FC<DemandForecastChartProps> = ({
 
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
-                <span className="text-white/70 font-medium">Point Forecast:</span>
+                <span className="text-white/70 font-medium">Expected:</span>
                 <span className="text-white font-bold text-sm">
                   {activePred.point_forecast_mn_kg.toFixed(2)} Mn kg
                 </span>
               </div>
 
               <div className="flex justify-between items-center text-[11px]">
-                <span className="text-emerald-400">50% Interval:</span>
+                <span className="text-emerald-300/90 font-medium">Likely range:</span>
                 <span className="font-mono text-white/90">
-                  [{activePred.interval_50.lower_mn_kg.toFixed(2)} – {activePred.interval_50.upper_mn_kg.toFixed(2)}]
+                  {activePred.interval_80.lower_mn_kg.toFixed(2)} to {activePred.interval_80.upper_mn_kg.toFixed(2)} Mn kg
                 </span>
-              </div>
-
-              <div className="flex justify-between items-center text-[11px]">
-                <span className="text-emerald-300/80">80% Interval:</span>
-                <span className="font-mono text-white/90">
-                  [{activePred.interval_80.lower_mn_kg.toFixed(2)} – {activePred.interval_80.upper_mn_kg.toFixed(2)}]
-                </span>
-              </div>
-
-              <div className="pt-2 mt-1 border-t border-white/10">
-                <p className="text-[10px] uppercase text-white/40 tracking-wider font-semibold mb-1">
-                  Ensemble Components:
-                </p>
-                <div className="grid grid-cols-3 gap-1 text-[10px] text-center">
-                  <div className="bg-white/5 p-1 rounded">
-                    <p className="text-white/50">Seasonal</p>
-                    <p className="font-semibold text-white">
-                      {activePred.component_forecasts.seasonal_mean_3yr_mn_kg.toFixed(1)}
-                    </p>
-                  </div>
-                  <div className="bg-white/5 p-1 rounded">
-                    <p className="text-white/50">ETS</p>
-                    <p className="font-semibold text-white">
-                      {activePred.component_forecasts.ets_mn_kg.toFixed(1)}
-                    </p>
-                  </div>
-                  <div className="bg-white/5 p-1 rounded">
-                    <p className="text-white/50">XGBoost</p>
-                    <p className="font-semibold text-white">
-                      {activePred.component_forecasts.xgboost_mn_kg.toFixed(1)}
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

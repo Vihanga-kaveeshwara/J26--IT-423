@@ -2,13 +2,16 @@
  * React Unit Test for DemandForecastPage
  * frontend/src/pages/DemandForecastPage.test.tsx
  *
- * Verifies that the real page component renders dynamic metrics from /metrics
- * using intentionally distinct mock numbers (Condition 3 & 8).
+ * Verifies the 3-Layer Structure for Non-Technical Users:
+ * - Layer 1: Headline monthly predictions, likely ranges, and plain chart
+ * - Layer 2: "How reliable is this?" card with status chip and zero jargon
+ * - Layer 3: Collapsible Technical Details (closed by default, contains full metrics when expanded)
+ * - Asserts distinct mocked metrics (bias: 9.99, mae: 8.88, coverage: 42.1%) appear in DOM
  */
 
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { DemandForecastPage } from './DemandForecastPage';
 import * as m1DemandService from '../services/m1DemandService';
@@ -26,7 +29,7 @@ vi.mock('../services/m1DemandService', () => ({
   },
 }));
 
-describe('DemandForecastPage Dynamic Metrics Rendering', () => {
+describe('DemandForecastPage 3-Layer Architecture & Dynamic Metrics', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
@@ -90,6 +93,7 @@ describe('DemandForecastPage Dynamic Metrics Rendering', () => {
           uses_appended_data: false,
           interval_50: { lower_mn_kg: 24.27, upper_mn_kg: 25.95, width_mn_kg: 1.68, nominal_coverage_pct: 50 },
           interval_80: { lower_mn_kg: 23.16, upper_mn_kg: 27.06, width_mn_kg: 3.90, nominal_coverage_pct: 80 },
+          interval_90: { lower_mn_kg: 22.05, upper_mn_kg: 28.17, width_mn_kg: 6.12, nominal_coverage_pct: 90 },
           component_forecasts: { seasonal_mean_3yr_mn_kg: 25.0, ets_mn_kg: 25.5, xgboost_mn_kg: 26.0 },
         },
       ],
@@ -114,59 +118,98 @@ describe('DemandForecastPage Dynamic Metrics Rendering', () => {
     vi.mocked(m1DemandService.fetchDemandModel).mockResolvedValue(mockModel as any);
   });
 
-  it('renders all distinct dynamic numbers from /metrics without any hardcoded values', async () => {
+  it('renders Layer 1 and Layer 2 in plain language, keeps technical section collapsed by default, and reveals dynamic metrics when expanded', async () => {
     render(
       <MemoryRouter>
         <DemandForecastPage />
       </MemoryRouter>
     );
 
-    // Wait for async loads to complete
+    // Wait for data load
     await waitFor(() => {
-      expect(screen.getByTestId('metric-pooled-bias')).toBeDefined();
+      expect(screen.getByTestId('layer-1-forecast')).toBeDefined();
     });
 
-    // 1. Assert MAE and RMSE reflect mocked numbers (8.88 and 7.77)
-    const maeEl = screen.getByTestId('metric-mae');
-    expect(maeEl.textContent).toContain('8.880 Mn kg');
+    // =========================================================================
+    // 1. Layer 1 Assertions: Plain Language Headlines & Cards
+    // =========================================================================
+    // One-line explanation under title
+    expect(screen.getByText('Each month is predicted from data 12 months earlier.')).toBeDefined();
 
-    const rmseEl = screen.getByTestId('metric-rmse');
-    expect(rmseEl.textContent).toContain('7.770 Mn kg');
+    // Retrospective demo banner (1 short sentence)
+    const retroBanner = screen.getByTestId('banner-retrospective-demo');
+    expect(retroBanner).toBeDefined();
+    expect(retroBanner.textContent).toContain('Demo using past data: model data ends 2024-12. These months are not future forecasts.');
 
-    const rmseNEl = screen.getByTestId('metric-rmse-n');
-    expect(rmseNEl.textContent).toContain('n=999');
+    // Monthly Card format: "<Month>: about X mn kg. Likely range: L to U mn kg"
+    expect(screen.getByText(/about 25\.50/i)).toBeDefined();
+    expect(screen.getByText(/Likely range:/i)).toBeDefined();
+    expect(screen.getByText(/23\.16 to 27\.06 mn kg/i)).toBeDefined();
 
-    // 2. Assert Bias reflects mocked numbers (+9.99 and +5.55)
-    const pooledBiasEl = screen.getByTestId('metric-pooled-bias');
-    expect(pooledBiasEl.textContent).toContain('+9.99 Mn kg');
+    // =========================================================================
+    // 2. Layer 2 Assertions: "How reliable is this?" Plain Card
+    // =========================================================================
+    const reliableCard = screen.getByTestId('card-how-reliable');
+    expect(reliableCard).toBeDefined();
 
-    const testBiasEl = screen.getByTestId('metric-test-bias');
-    expect(testBiasEl.textContent).toContain('+5.55 Mn kg');
+    // Status chip
+    const statusChip = screen.getByTestId('chip-use-with-caution');
+    expect(statusChip.textContent).toContain('Use with caution');
 
-    // 3. Assert share of actuals below forecast reflects mocked numbers (42.1% and 33.3%)
-    const sharePooledEl = screen.getByTestId('metric-share-below-pooled');
-    expect(sharePooledEl.textContent).toContain('42.1%');
+    // Sentence 1: Coverage (assert dynamic numbers 42.1% and 35.7%)
+    const covSentence = screen.getByTestId('sentence-coverage');
+    expect(covSentence.textContent).toContain('In past tests the real value fell inside this range about 42.1% of the time (about 35.7% in 2023-24), not the 80% it aims for.');
 
-    const shareTestEl = screen.getByTestId('metric-share-below-test');
-    expect(shareTestEl.textContent).toContain('33.3%');
+    // Sentence 2: Bias (assert dynamic numbers 9.99 mn kg and 5.55 mn kg)
+    const biasSentence = screen.getByTestId('sentence-bias');
+    expect(biasSentence.textContent).toContain('The model tends to forecast a bit too high: on average 9.99 mn kg (5.55 mn kg in 2023-24).');
 
-    // 4. Assert Observed Coverages reflect mocked numbers (42.1%, 35.7%, 28.9%, 61.2%)
+    // Sentence 3: Error (assert dynamic numbers 8.88 mn kg and 12.3%)
+    const errSentence = screen.getByTestId('sentence-error');
+    expect(errSentence.textContent).toContain('Typical error is about 8.88 mn kg per month (12.3%).');
+
+    // =========================================================================
+    // 3. Layer 3 Assertions: Collapsed by Default, Expandable
+    // =========================================================================
+    // Initially, technical details content should NOT be in the DOM
+    expect(screen.queryByTestId('technical-details-content')).toBeNull();
+
+    const toggleBtn = screen.getByTestId('toggle-technical-details');
+    expect(toggleBtn.getAttribute('aria-expanded')).toBe('false');
+
+    // Expand Layer 3 by clicking the toggle
+    fireEvent.click(toggleBtn);
+    expect(toggleBtn.getAttribute('aria-expanded')).toBe('true');
+
+    // Now technical details content must be visible in the DOM
+    const techContent = screen.getByTestId('technical-details-content');
+    expect(techContent).toBeDefined();
+
+    // Full backend disclaimer
+    const disclaimerEl = screen.getByTestId('text-backend-disclaimer');
+    expect(disclaimerEl.textContent).toContain('Mocked dynamic backend disclaimer test.');
+
+    // Direct 12-month model note
+    expect(screen.getByTestId('note-direct-12m')).toBeDefined();
+
+    // MAE, RMSE and sample size n
+    expect(screen.getByTestId('metric-mae').textContent).toContain('8.880 Mn kg');
+    expect(screen.getByTestId('metric-rmse').textContent).toContain('7.770 Mn kg');
+    expect(screen.getByTestId('metric-rmse-n').textContent).toContain('n=999');
+
+    // Detailed Bias & Coverage metrics inside technical section
+    expect(screen.getByTestId('metric-pooled-bias').textContent).toContain('+9.99 Mn kg');
+    expect(screen.getByTestId('metric-test-bias').textContent).toContain('+5.55 Mn kg');
+    expect(screen.getByTestId('metric-share-below-pooled').textContent).toContain('42.1%');
+    expect(screen.getByTestId('metric-share-below-test').textContent).toContain('33.3%');
     expect(screen.getByTestId('metric-cov80-overall').textContent).toContain('42.1%');
     expect(screen.getByTestId('metric-cov80-test').textContent).toContain('35.7%');
     expect(screen.getByTestId('metric-cov50-overall').textContent).toContain('28.9%');
     expect(screen.getByTestId('metric-cov90-overall').textContent).toContain('61.2%');
 
-    // 5. Assert Asymmetry Offsets reflect mocked numbers ([-2.34, +1.56])
+    // Asymmetry offsets
     expect(screen.getByTestId('offset-80').textContent).toContain('[-2.34, +1.56]');
     expect(screen.getByTestId('offset-50').textContent).toContain('[-1.23, +0.45]');
     expect(screen.getByTestId('offset-90').textContent).toContain('[-3.45, +2.67]');
-
-    // 6. Assert non-dismissible retrospective demo banner is rendered for past dates
-    const retroBanner = screen.getByTestId('banner-retrospective-demo');
-    expect(retroBanner).toBeDefined();
-    expect(retroBanner.textContent).toContain('Retrospective demo: model data ends 2024-12');
-
-    // 7. Assert direct 12-month model note is present
-    expect(screen.getByTestId('note-direct-12m')).toBeDefined();
   });
 });

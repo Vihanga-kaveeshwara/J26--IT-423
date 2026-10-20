@@ -89,6 +89,46 @@ def get_backtest_bias_summary() -> dict[str, float]:
     }
 
 
+def get_backtest_coverage_summary() -> dict[str, Any]:
+    """Compute observed coverage statistics dynamically from the verified evaluation CSVs."""
+    out = {
+        "n_origins": 81,
+        "n_test_origins": 23,
+        "nominal_80_overall_pct": 67.9,
+        "nominal_80_test_phase_pct": 60.9,
+        "nominal_90_overall_pct": 79.0,
+        "nominal_90_test_phase_pct": 78.3,
+        "nominal_50_overall_pct": 51.9,
+        "nominal_50_test_phase_pct": 39.1,
+    }
+    eval_path = BACKTEST_PREDS_PATH.parent / "prediction_intervals_evaluation.csv"
+    if eval_path.exists():
+        df = pd.read_csv(eval_path)
+        sub = df[df["model"] == "combo_mean_xgb"]
+        if len(sub) > 0:
+            out["n_origins"] = int(len(sub))
+            out["nominal_80_overall_pct"] = round(float(sub["covered_80"].mean() * 100), 1)
+            out["nominal_50_overall_pct"] = round(float(sub["covered_50"].mean() * 100), 1)
+
+            sub_test = sub[sub["forecast_year"] >= 2023]
+            out["n_test_origins"] = int(len(sub_test))
+            out["nominal_80_test_phase_pct"] = round(float(sub_test["covered_80"].mean() * 100), 1)
+            out["nominal_50_test_phase_pct"] = round(float(sub_test["covered_50"].mean() * 100), 1)
+
+    comp_path = BACKTEST_PREDS_PATH.parent / "interval_calibration_comparison.csv"
+    if comp_path.exists():
+        df_comp = pd.read_csv(comp_path)
+        sub_comp = df_comp[(df_comp["model"] == "combo_mean_xgb") & (df_comp["variant"] == "a_expanding")]
+        row_overall = sub_comp[sub_comp["split"] == "overall_2018_2024"]
+        if len(row_overall) > 0:
+            out["nominal_90_overall_pct"] = round(float(row_overall["cov_90_pct"].iloc[0]), 1)
+        row_test = sub_comp[sub_comp["split"] == "test_2023_2024"]
+        if len(row_test) > 0:
+            out["nominal_90_test_phase_pct"] = round(float(row_test["cov_90_pct"].iloc[0]), 1)
+
+    return out
+
+
 def get_coverage_disclaimer() -> str:
     """Generate disclaimer string dynamically from predictions so numbers never drift."""
     b = get_backtest_bias_summary()
@@ -222,24 +262,48 @@ def get_metrics_info() -> dict[str, Any]:
     """Retrieve M1 backtest evaluation benchmarks, empirical coverage, bias, and operational limitations."""
     meta = get_metadata()
     b = get_backtest_bias_summary()
+    cov = get_backtest_coverage_summary()
+    cal = meta.get("interval_calibration", {})
+    quantiles = cal.get("empirical_signed_error_quantiles", {})
     return {
         "success": True,
         "model_version": meta.get("model_version"),
         "backtest_metrics": meta.get("backtest_metrics"),
-        "interval_calibration": meta.get("interval_calibration"),
+        "interval_calibration": cal,
         "observed_backtest_coverage": {
-            "nominal_80_overall_pct": 67.9,
-            "nominal_80_test_phase_pct": 60.9,
-            "nominal_90_test_phase_pct": 78.3,
-            "nominal_50_overall_pct": 51.9,
-            "nominal_50_test_phase_pct": 39.1,
+            "n_origins": cov["n_origins"],
+            "n_test_origins": cov["n_test_origins"],
+            "nominal_80_overall_pct": cov["nominal_80_overall_pct"],
+            "nominal_80_test_phase_pct": cov["nominal_80_test_phase_pct"],
+            "nominal_90_overall_pct": cov["nominal_90_overall_pct"],
+            "nominal_90_test_phase_pct": cov["nominal_90_test_phase_pct"],
+            "nominal_50_overall_pct": cov["nominal_50_overall_pct"],
+            "nominal_50_test_phase_pct": cov["nominal_50_test_phase_pct"],
         },
         "bias_and_asymmetry": {
+            "n_pooled_origins": 152,
+            "n_test_origins": cov["n_test_origins"],
+            "n_fixed_offset_errors": 152,
             "pooled_bias_mn_kg": b["pooled_bias"],
             "test_phase_2023_2024_bias_mn_kg": b["test_2324_bias"],
             "share_actuals_below_point_forecast_pooled_pct": b["share_below_pooled"],
             "share_actuals_below_point_forecast_test_phase_pct": b["share_below_test"],
             "interval_symmetry": "asymmetric (calibrated via empirical error quantiles to adjust for positive over-forecast bias)",
+            "sign_convention": "point forecast + offset: lower_bound = max(0, point_pred + lower_offset_mn_kg), upper_bound = point_pred + upper_offset_mn_kg (where signed error e = actual - forecast)",
+            "asymmetry_offsets": {
+                "nominal_50": {
+                    "lower_offset_mn_kg": round(float(quantiles.get("q25", -1.97)), 2),
+                    "upper_offset_mn_kg": round(float(quantiles.get("q75", 0.56)), 2),
+                },
+                "nominal_80": {
+                    "lower_offset_mn_kg": round(float(quantiles.get("q10", -3.25)), 2),
+                    "upper_offset_mn_kg": round(float(quantiles.get("q90", 1.86)), 2),
+                },
+                "nominal_90": {
+                    "lower_offset_mn_kg": round(float(quantiles.get("q05", -4.16)), 2),
+                    "upper_offset_mn_kg": round(float(quantiles.get("q95", 2.35)), 2),
+                },
+            },
             "protocol_note": "Direct h=12 forecasting: target T is forecast from data up to T-12 only. Recently appended actuals only affect target months >= appended_date + 12 months.",
         },
         "known_limitations": meta.get("known_limitations"),

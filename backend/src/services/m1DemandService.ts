@@ -77,6 +77,11 @@ export interface ModelInfoResponse {
   status: string;
 }
 
+export interface AsymmetryOffsetPair {
+  lower_offset_mn_kg: number;
+  upper_offset_mn_kg: number;
+}
+
 export interface MetricsResponse {
   success: boolean;
   model_version: string;
@@ -90,18 +95,30 @@ export interface MetricsResponse {
   };
   interval_calibration: Record<string, any>;
   observed_backtest_coverage: {
+    n_origins: number;
+    n_test_origins: number;
     nominal_80_overall_pct: number;
     nominal_80_test_phase_pct: number;
+    nominal_90_overall_pct: number;
     nominal_90_test_phase_pct: number;
     nominal_50_overall_pct: number;
     nominal_50_test_phase_pct: number;
   };
   bias_and_asymmetry: {
+    n_pooled_origins: number;
+    n_test_origins: number;
+    n_fixed_offset_errors: number;
     pooled_bias_mn_kg: number;
     test_phase_2023_2024_bias_mn_kg: number;
     share_actuals_below_point_forecast_pooled_pct: number;
     share_actuals_below_point_forecast_test_phase_pct: number;
     interval_symmetry: string;
+    sign_convention: string;
+    asymmetry_offsets: {
+      nominal_50: AsymmetryOffsetPair;
+      nominal_80: AsymmetryOffsetPair;
+      nominal_90: AsymmetryOffsetPair;
+    };
     protocol_note: string;
   };
   known_limitations: string[];

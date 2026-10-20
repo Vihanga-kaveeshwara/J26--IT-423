@@ -4,6 +4,7 @@ import json
 import sys
 import unittest
 from pathlib import Path
+import numpy as np
 import pandas as pd
 
 from fastapi.testclient import TestClient
@@ -50,29 +51,77 @@ class TestMLServingAPI(unittest.TestCase):
         self.assertTrue(len(data["cleaned_data_sha256"]) == 64)
 
     def test_metrics_endpoint(self):
-        """GET /api/ml/metrics returns verified backtest metrics, coverage, bias, and asymmetry."""
+        """GET /api/ml/metrics returns verified backtest metrics, coverage, bias, asymmetry offsets, and n counts."""
+        # Dynamically recompute from backtest CSVs (Condition 5)
+        df_pred = pd.read_csv(BACKTEST_PREDS_PATH)
+        err_all = df_pred["combo_mean_xgb"] - df_pred["actual"]
+        recomputed_mae = float(np.mean(np.abs(err_all)))
+        recomputed_rmse = float(np.sqrt(np.mean(err_all ** 2)))
+        recomputed_pooled_bias = float(np.mean(err_all))
+
+        sub_test_pred = df_pred[df_pred["forecast_year"] >= 2023]
+        err_test = sub_test_pred["combo_mean_xgb"] - sub_test_pred["actual"]
+        recomputed_test_bias = float(np.mean(err_test))
+
+        recomputed_share_below_pooled = float(np.mean(df_pred["actual"] < df_pred["combo_mean_xgb"]) * 100)
+        recomputed_share_below_test = float(np.mean(sub_test_pred["actual"] < sub_test_pred["combo_mean_xgb"]) * 100)
+
+        # Coverage from evaluation CSV
+        eval_path = BACKTEST_PREDS_PATH.parent / "prediction_intervals_evaluation.csv"
+        df_eval = pd.read_csv(eval_path)
+        sub_eval = df_eval[df_eval["model"] == "combo_mean_xgb"]
+        sub_eval_test = sub_eval[sub_eval["forecast_year"] >= 2023]
+        recomputed_cov_80_overall = float(sub_eval["covered_80"].mean() * 100)
+        recomputed_cov_80_test = float(sub_eval_test["covered_80"].mean() * 100)
+        recomputed_cov_50_overall = float(sub_eval["covered_50"].mean() * 100)
+        recomputed_cov_50_test = float(sub_eval_test["covered_50"].mean() * 100)
+
+        # 90% from comparison CSV
+        comp_path = BACKTEST_PREDS_PATH.parent / "interval_calibration_comparison.csv"
+        df_comp = pd.read_csv(comp_path)
+        sub_comp = df_comp[(df_comp["model"] == "combo_mean_xgb") & (df_comp["variant"] == "a_expanding")]
+        recomputed_cov_90_overall = float(sub_comp[sub_comp["split"] == "overall_2018_2024"]["cov_90_pct"].iloc[0])
+        recomputed_cov_90_test = float(sub_comp[sub_comp["split"] == "test_2023_2024"]["cov_90_pct"].iloc[0])
+
         response = self.client.get("/api/ml/metrics")
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertTrue(data["success"])
+
+        # Accuracy checks
         metrics = data["backtest_metrics"]
-        self.assertAlmostEqual(metrics["mae"], 1.734265, places=5)
-        self.assertAlmostEqual(metrics["rmse"], 2.236599, places=5)
-        self.assertAlmostEqual(metrics["bias_mn_kg"], 0.747662, places=5)
+        self.assertEqual(metrics["n_origins"], 152)
+        self.assertAlmostEqual(metrics["mae"], recomputed_mae, places=5)
+        self.assertAlmostEqual(metrics["rmse"], recomputed_rmse, places=5)
+        self.assertAlmostEqual(metrics["bias_mn_kg"], recomputed_pooled_bias, places=5)
 
         # Coverage checks
         cov = data["observed_backtest_coverage"]
-        self.assertAlmostEqual(cov["nominal_80_overall_pct"], 67.9, places=1)
-        self.assertAlmostEqual(cov["nominal_80_test_phase_pct"], 60.9, places=1)
-        self.assertAlmostEqual(cov["nominal_90_test_phase_pct"], 78.3, places=1)
-        self.assertAlmostEqual(cov["nominal_50_overall_pct"], 51.9, places=1)
+        self.assertEqual(cov["n_origins"], 81)
+        self.assertEqual(cov["n_test_origins"], 23)
+        self.assertAlmostEqual(cov["nominal_80_overall_pct"], recomputed_cov_80_overall, places=1)
+        self.assertAlmostEqual(cov["nominal_80_test_phase_pct"], recomputed_cov_80_test, places=1)
+        self.assertAlmostEqual(cov["nominal_90_overall_pct"], recomputed_cov_90_overall, places=1)
+        self.assertAlmostEqual(cov["nominal_90_test_phase_pct"], recomputed_cov_90_test, places=1)
+        self.assertAlmostEqual(cov["nominal_50_overall_pct"], recomputed_cov_50_overall, places=1)
+        self.assertAlmostEqual(cov["nominal_50_test_phase_pct"], recomputed_cov_50_test, places=1)
 
-        # Bias and asymmetry checks (Step 5)
+        # Bias and asymmetry checks
         bias_info = data["bias_and_asymmetry"]
-        self.assertAlmostEqual(bias_info["pooled_bias_mn_kg"], 0.75, places=2)
-        self.assertAlmostEqual(bias_info["test_phase_2023_2024_bias_mn_kg"], 1.77, places=2)
-        self.assertAlmostEqual(bias_info["share_actuals_below_point_forecast_pooled_pct"], 63.8, places=1)
-        self.assertAlmostEqual(bias_info["share_actuals_below_point_forecast_test_phase_pct"], 78.3, places=1)
+        self.assertEqual(bias_info["n_pooled_origins"], 152)
+        self.assertEqual(bias_info["n_test_origins"], 23)
+        self.assertEqual(bias_info["n_fixed_offset_errors"], 152)
+        self.assertAlmostEqual(bias_info["pooled_bias_mn_kg"], recomputed_pooled_bias, places=2)
+        self.assertAlmostEqual(bias_info["test_phase_2023_2024_bias_mn_kg"], recomputed_test_bias, places=2)
+        self.assertAlmostEqual(bias_info["share_actuals_below_point_forecast_pooled_pct"], recomputed_share_below_pooled, places=1)
+        self.assertAlmostEqual(bias_info["share_actuals_below_point_forecast_test_phase_pct"], recomputed_share_below_test, places=1)
+
+        # Asymmetry offsets checks
+        offsets = bias_info["asymmetry_offsets"]
+        self.assertIn("nominal_50", offsets)
+        self.assertIn("nominal_80", offsets)
+        self.assertIn("nominal_90", offsets)
+        self.assertIn("point forecast + offset", bias_info["sign_convention"])
 
     def test_predict_demand_direct_12m_semantics(self):
         """POST /api/ml/predict-demand returns correct direct 12m response semantics."""

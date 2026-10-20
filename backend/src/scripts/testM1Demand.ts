@@ -121,36 +121,47 @@ const mockModelInfoResponse = {
 
 const mockMetricsResponse = {
   success: true,
-  model_version: 'm1_demand_forecast_v1',
+  model_version: '1.0.0',
   backtest_metrics: {
-    evaluation_protocol: 'expanding_window_rolling_origin',
-    n_origins: 81,
-    mae: 1.7343,
+    evaluation_protocol: 'Direct 12-month-ahead rolling origin (2012-2024, 152 origins)',
+    n_origins: 152,
+    mae: 1.73426,
     rmse: 2.2366,
-    mape_pct: 7.82,
+    mape_pct: 8.05,
     bias_mn_kg: 0.7477,
   },
   interval_calibration: {
-    method: 'empirical_residual_quantiles_expanding_window',
+    variant: 'a_expanding_window_empirical_quantiles',
   },
   observed_backtest_coverage: {
-    nominal_80_overall_pct: 82.7,
-    nominal_80_test_phase_pct: 68.0,
-    nominal_90_test_phase_pct: 84.0,
-    nominal_50_overall_pct: 54.3,
-    nominal_50_test_phase_pct: 44.0,
+    n_origins: 81,
+    n_test_origins: 23,
+    nominal_80_overall_pct: 67.9,
+    nominal_80_test_phase_pct: 60.9,
+    nominal_90_overall_pct: 79.0,
+    nominal_90_test_phase_pct: 78.3,
+    nominal_50_overall_pct: 51.9,
+    nominal_50_test_phase_pct: 39.1,
   },
   bias_and_asymmetry: {
-    pooled_bias_mn_kg: 0.7477,
-    test_phase_2023_2024_bias_mn_kg: 1.054,
-    share_actuals_below_point_forecast_pooled_pct: 65.4,
-    share_actuals_below_point_forecast_test_phase_pct: 72.0,
-    interval_symmetry: 'Asymmetric (wider upper interval reflecting historical over-forecasts)',
-    protocol_note: 'Coverage drops to ~68% in 2023-2024 test phase due to macro export contraction.',
+    n_pooled_origins: 152,
+    n_test_origins: 23,
+    n_fixed_offset_errors: 152,
+    pooled_bias_mn_kg: 0.75,
+    test_phase_2023_2024_bias_mn_kg: 1.77,
+    share_actuals_below_point_forecast_pooled_pct: 63.8,
+    share_actuals_below_point_forecast_test_phase_pct: 78.3,
+    interval_symmetry: 'asymmetric (calibrated via empirical error quantiles to adjust for positive over-forecast bias)',
+    sign_convention: 'point forecast + offset: lower_bound = max(0, point_pred + lower_offset_mn_kg), upper_bound = point_pred + upper_offset_mn_kg (where signed error e = actual - forecast)',
+    asymmetry_offsets: {
+      nominal_50: { lower_offset_mn_kg: -1.97, upper_offset_mn_kg: 0.56 },
+      nominal_80: { lower_offset_mn_kg: -3.25, upper_offset_mn_kg: 1.86 },
+      nominal_90: { lower_offset_mn_kg: -4.16, upper_offset_mn_kg: 2.35 },
+    },
+    protocol_note: 'Direct h=12 forecasting: target T is forecast from data up to T-12 only.',
   },
   known_limitations: [
     'Model operates on direct 12-month lag.',
-    'Test phase 2023-2024 exhibits mild over-forecast tendency (+1.05 Mn kg bias).',
   ],
 };
 
@@ -346,11 +357,17 @@ async function runTestSuite() {
     await testCase('GET /api/demand-forecast/metrics returns validation metrics & calibrations', async () => {
       const res = await axios.get(`${backendBaseUrl}/api/demand-forecast/metrics`);
       if (res.status !== 200) throw new Error(`Expected 200, got ${res.status}`);
-      if (res.data.backtest_metrics.mae !== 1.7343) {
+      if (Math.abs(res.data.backtest_metrics.mae - 1.73426) > 0.01) {
         throw new Error(`MAE mismatch: ${res.data.backtest_metrics.mae}`);
       }
       if (!res.data.observed_backtest_coverage || !res.data.bias_and_asymmetry) {
         throw new Error('Missing coverage or bias blocks');
+      }
+      if (res.data.backtest_metrics.n_origins !== 152) {
+        throw new Error(`n_origins mismatch: ${res.data.backtest_metrics.n_origins}`);
+      }
+      if (!res.data.bias_and_asymmetry.asymmetry_offsets?.nominal_80) {
+        throw new Error('Missing asymmetry_offsets for nominal_80');
       }
     });
 

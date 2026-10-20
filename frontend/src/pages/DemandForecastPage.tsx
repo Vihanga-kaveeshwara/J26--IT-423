@@ -3,11 +3,12 @@
  * frontend/src/pages/DemandForecastPage.tsx
  *
  * Full dashboard for M1 export demand forecasting:
- * - Month range picker with presets (max 12 months)
+ * - Dynamic month range picker with presets derived from latest_actual_month
+ * - Non-dismissible retrospective demo banner for past months
  * - Shaded interval SVG chart (50% and 80% bands)
  * - Monthly breakdown table with point forecast and component models
- * - Advisory section: latest_actual_month, disclaimer, warnings, direct 12-month model note
- * - Observed vs nominal coverage statistics and over-forecast bias disclosure
+ * - Runtime metrics binding from GET /api/demand-forecast/metrics (zero hardcoding)
+ * - Observed vs nominal coverage (50%, 80%, 90%) and empirical asymmetry offsets
  * - Loading, error (503/400/422), and empty states
  */
 
@@ -16,13 +17,12 @@ import {
   Calendar,
   AlertTriangle,
   Info,
-  TrendingUp,
   RefreshCw,
   CheckCircle2,
   ShieldAlert,
-  BarChart2,
   Layers,
-  ChevronRight,
+  History,
+  Sliders,
 } from 'lucide-react';
 import { M1Navbar } from '../components/m1/M1Navbar';
 import { DemandForecastChart } from '../components/m1/DemandForecastChart';
@@ -38,6 +38,32 @@ import {
   MetricsResponse,
 } from '../types/demandForecast';
 
+// Helper date arithmetic functions
+export function getNextMonth(monthStr: string): string {
+  const [y, m] = monthStr.split('-').map(Number);
+  const nextM = m === 12 ? 1 : m + 1;
+  const nextY = m === 12 ? y + 1 : y;
+  return `${nextY}-${String(nextM).padStart(2, '0')}`;
+}
+
+export function addMonths(monthStr: string, count: number): string {
+  const [y, m] = monthStr.split('-').map(Number);
+  const totalMonths = y * 12 + (m - 1) + count;
+  const newY = Math.floor(totalMonths / 12);
+  const newM = (totalMonths % 12) + 1;
+  return `${newY}-${String(newM).padStart(2, '0')}`;
+}
+
+export function getMonthList(from: string, to: string): string[] {
+  const res: string[] = [];
+  let cur = from;
+  while (cur <= to && res.length < 36) {
+    res.push(cur);
+    cur = getNextMonth(cur);
+  }
+  return res;
+}
+
 export function DemandForecastPage() {
   const [fromMonth, setFromMonth] = useState('2025-01');
   const [toMonth, setToMonth] = useState('2025-03');
@@ -45,41 +71,23 @@ export function DemandForecastPage() {
   const [modelInfo, setModelInfo] = useState<ModelInfoResponse | null>(null);
   const [metricsInfo, setMetricsInfo] = useState<MetricsResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [metricsLoading, setMetricsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [errorStatus, setErrorStatus] = useState<number | null>(null);
+  const [metricsError, setMetricsError] = useState<string | null>(null);
 
-  // Month list for dropdown picker (2025-01 to 2025-12)
-  const allowedMonths = [
-    '2025-01',
-    '2025-02',
-    '2025-03',
-    '2025-04',
-    '2025-05',
-    '2025-06',
-    '2025-07',
-    '2025-08',
-    '2025-09',
-    '2025-10',
-    '2025-11',
-    '2025-12',
-  ];
-
-  const loadData = async (from = fromMonth, to = toMonth) => {
+  const loadData = async (from: string, to: string) => {
     setLoading(true);
     setError(null);
     setErrorStatus(null);
 
     try {
-      // Parallel fetch of forecast, model, and metrics
-      const [forecastRes, modelRes, metricsRes] = await Promise.all([
+      const [forecastRes, modelRes] = await Promise.all([
         fetchDemandForecast(from, to),
         fetchDemandModel().catch(() => null),
-        fetchDemandMetrics().catch(() => null),
       ]);
-
       setForecastData(forecastRes);
       if (modelRes) setModelInfo(modelRes);
-      if (metricsRes) setMetricsInfo(metricsRes);
     } catch (err: any) {
       if (err instanceof DemandApiError) {
         setError(err.message);
@@ -93,11 +101,41 @@ export function DemandForecastPage() {
     }
   };
 
+  const loadMetrics = async () => {
+    setMetricsLoading(true);
+    setMetricsError(null);
+    try {
+      const metricsRes = await fetchDemandMetrics();
+      setMetricsInfo(metricsRes);
+    } catch (err: any) {
+      setMetricsError(err?.message || 'Failed to fetch metrics');
+    } finally {
+      setMetricsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    loadData('2025-01', '2025-03');
+    loadData(fromMonth, toMonth);
+    loadMetrics();
   }, []);
 
-  // Quick preset handlers
+  // Derived date bounds
+  const latestActualMonth = forecastData?.latest_actual_month || modelInfo?.data_cutoff_date || '2024-12';
+  const startHorizonMonth = getNextMonth(latestActualMonth);
+  const maxAllowedTargetMonth = addMonths(latestActualMonth, 12);
+  const allowedMonths = getMonthList(startHorizonMonth, maxAllowedTargetMonth);
+
+  // Dynamic presets
+  const presetQ1End = addMonths(latestActualMonth, 3);
+  const presetH1End = addMonths(latestActualMonth, 6);
+  const presetFullEnd = addMonths(latestActualMonth, 12);
+
+  // Retrospective demo banner check
+  const now = new Date();
+  const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const isRetrospective = fromMonth < currentYearMonth || toMonth < currentYearMonth;
+
+  // Preset handler
   const applyPreset = (from: string, to: string) => {
     setFromMonth(from);
     setToMonth(to);
@@ -146,8 +184,8 @@ export function DemandForecastPage() {
               <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                 Module M1 Champion
               </span>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-gold-500/20 text-gold-300 border border-gold-500/30">
-                Model data ends: {forecastData?.latest_actual_month || '2024-12'}
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-gold-500/20 text-gold-300 border border-gold-500/30" data-testid="badge-latest-actual">
+                Model data ends: {latestActualMonth}
               </span>
             </div>
             <h1 className="text-3xl font-display font-bold text-white tracking-wide">
@@ -159,14 +197,30 @@ export function DemandForecastPage() {
           </div>
 
           <button
-            onClick={() => loadData(fromMonth, toMonth)}
-            disabled={loading}
+            onClick={() => {
+              loadData(fromMonth, toMonth);
+              loadMetrics();
+            }}
+            disabled={loading || metricsLoading}
             className="self-start md:self-auto inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-forest-800 hover:bg-forest-700 text-white text-sm font-medium border border-white/10 transition-colors shadow-sm disabled:opacity-50"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${loading || metricsLoading ? 'animate-spin' : ''}`} />
             Refresh
           </button>
         </div>
+
+        {/* Non-dismissible Retrospective Demo Banner (Condition 4) */}
+        {isRetrospective && (
+          <div
+            data-testid="banner-retrospective-demo"
+            className="bg-gold-500/15 border-2 border-gold-500/40 rounded-2xl p-4 flex items-center gap-3 text-gold-200 text-xs sm:text-sm font-medium shadow-gold"
+          >
+            <History className="w-5 h-5 text-gold-400 shrink-0" />
+            <p>
+              <strong>Retrospective demo:</strong> model data ends <strong>{latestActualMonth}</strong>. Months already in the past are not future forecasts.
+            </p>
+          </div>
+        )}
 
         {/* Mandatory Advisory Notice Banner */}
         <section className="bg-forest-900/60 rounded-2xl p-5 border border-white/10 space-y-3.5 shadow-md">
@@ -175,17 +229,17 @@ export function DemandForecastPage() {
             <div className="space-y-1.5 text-xs sm:text-sm">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-semibold text-white">Forecasting Mechanism:</span>
-                <span className="text-emerald-300 font-medium">
+                <span className="text-emerald-300 font-medium" data-testid="note-direct-12m">
                   each month is forecast from data 12 months earlier (direct 12-month model)
                 </span>
                 <span className="text-white/40">|</span>
                 <span className="text-white/80">
-                  Data Cutoff: <strong className="text-white">2024-12</strong>
+                  Data Cutoff: <strong className="text-white">{latestActualMonth}</strong>
                 </span>
               </div>
 
               {forecastData?.disclaimer && (
-                <p className="text-white/80 leading-relaxed italic">
+                <p className="text-white/80 leading-relaxed italic" data-testid="text-backend-disclaimer">
                   &ldquo;{forecastData.disclaimer}&rdquo;
                 </p>
               )}
@@ -204,82 +258,183 @@ export function DemandForecastPage() {
             </div>
           </div>
 
-          {/* Over-Forecast Bias & Calibration Disclosure */}
+          {/* Over-Forecast Bias & Calibration Disclosure (Runtime values from /metrics, Condition 2 & 7) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3 border-t border-white/10 text-xs">
-            <div className="bg-forest-950/60 p-3 rounded-xl border border-gold-500/20 flex gap-2.5">
-              <ShieldAlert className="w-4 h-4 text-gold-400 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-gold-300 mb-0.5">
-                  Over-Forecast Bias Advisory
-                </p>
-                <p className="text-white/70 leading-relaxed">
-                  Backtesting against the 2023–2024 test phase revealed a +1.05 Mn kg mean bias (+0.75 Mn kg pooled), with ~72% of actuals falling below the point forecast due to macro export contraction. Users should plan around conservative estimates.
-                </p>
+            {/* Box 1: Bias & Asymmetry */}
+            <div className="bg-forest-950/60 p-3.5 rounded-xl border border-gold-500/20 space-y-2">
+              <div className="flex items-center gap-2 font-semibold text-gold-300">
+                <ShieldAlert className="w-4 h-4 text-gold-400 shrink-0" />
+                <span>Over-Forecast Bias Advisory</span>
               </div>
+
+              {metricsLoading ? (
+                <div className="animate-pulse space-y-1 text-white/40">Loading bias metrics...</div>
+              ) : metricsError ? (
+                <p className="text-red-400">Failed to load bias metrics: {metricsError}</p>
+              ) : metricsInfo ? (
+                <div className="text-white/80 space-y-1.5 leading-relaxed">
+                  <p>
+                    Backtesting against held-out test phase (2023–2024, n={metricsInfo.bias_and_asymmetry.n_test_origins}) revealed a{' '}
+                    <strong className="text-gold-300" data-testid="metric-test-bias">
+                      +{metricsInfo.bias_and_asymmetry.test_phase_2023_2024_bias_mn_kg.toFixed(2)} Mn kg
+                    </strong>{' '}
+                    mean bias (pooled historical bias:{' '}
+                    <strong className="text-white" data-testid="metric-pooled-bias">
+                      +{metricsInfo.bias_and_asymmetry.pooled_bias_mn_kg.toFixed(2)} Mn kg
+                    </strong>{' '}
+                    across n={metricsInfo.bias_and_asymmetry.n_pooled_origins} origins, 2012–2024).
+                  </p>
+                  <p>
+                    Historical actuals fell below point forecasts in{' '}
+                    <strong className="text-white" data-testid="metric-share-below-pooled">
+                      {metricsInfo.bias_and_asymmetry.share_actuals_below_point_forecast_pooled_pct.toFixed(1)}%
+                    </strong>{' '}
+                    of pooled months and{' '}
+                    <strong className="text-gold-300" data-testid="metric-share-below-test">
+                      {metricsInfo.bias_and_asymmetry.share_actuals_below_point_forecast_test_phase_pct.toFixed(1)}%
+                    </strong>{' '}
+                    of 2023–2024 test months.
+                  </p>
+                </div>
+              ) : null}
             </div>
 
-            <div className="bg-forest-950/60 p-3 rounded-xl border border-emerald-500/20 flex gap-2.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-semibold text-emerald-300 mb-0.5">
-                  Observed vs Nominal Interval Coverage
-                </p>
-                <p className="text-white/70 leading-relaxed">
-                  Nominal 80% interval achieves <strong className="text-white">82.7%</strong> coverage pooled, but drops to <strong className="text-white">~68.0%</strong> during 2023–2024 test phase. Nominal 50% interval achieves <strong className="text-white">54.3%</strong> pooled (44.0% test phase).
-                </p>
+            {/* Box 2: Observed vs Nominal Coverage */}
+            <div className="bg-forest-950/60 p-3.5 rounded-xl border border-emerald-500/20 space-y-2">
+              <div className="flex items-center gap-2 font-semibold text-emerald-300">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Observed vs Nominal Interval Coverage</span>
               </div>
+
+              {metricsLoading ? (
+                <div className="animate-pulse space-y-1 text-white/40">Loading coverage metrics...</div>
+              ) : metricsError ? (
+                <p className="text-red-400">Failed to load coverage metrics: {metricsError}</p>
+              ) : metricsInfo ? (
+                <div className="text-white/80 space-y-1.5 leading-relaxed">
+                  <p>
+                    Nominal 80% interval achieves{' '}
+                    <strong className="text-white" data-testid="metric-cov80-overall">
+                      {metricsInfo.observed_backtest_coverage.nominal_80_overall_pct.toFixed(1)}%
+                    </strong>{' '}
+                    coverage overall (n={metricsInfo.observed_backtest_coverage.n_origins}, 2018–2024), dropping to{' '}
+                    <strong className="text-emerald-300" data-testid="metric-cov80-test">
+                      {metricsInfo.observed_backtest_coverage.nominal_80_test_phase_pct.toFixed(1)}%
+                    </strong>{' '}
+                    during 2023–2024 test phase (n={metricsInfo.observed_backtest_coverage.n_test_origins}).
+                  </p>
+                  <p>
+                    Nominal 50% interval achieves{' '}
+                    <strong className="text-white" data-testid="metric-cov50-overall">
+                      {metricsInfo.observed_backtest_coverage.nominal_50_overall_pct.toFixed(1)}%
+                    </strong>{' '}
+                    overall ({metricsInfo.observed_backtest_coverage.nominal_50_test_phase_pct.toFixed(1)}% test). Nominal 90% achieves{' '}
+                    <strong className="text-white" data-testid="metric-cov90-overall">
+                      {metricsInfo.observed_backtest_coverage.nominal_90_overall_pct.toFixed(1)}%
+                    </strong>{' '}
+                    overall ({metricsInfo.observed_backtest_coverage.nominal_90_test_phase_pct.toFixed(1)}% test).
+                  </p>
+                </div>
+              ) : null}
             </div>
           </div>
+
+          {/* Asymmetry Offsets & Condition 6 Note */}
+          {metricsInfo && (
+            <div className="pt-3 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-white/70">
+              <div className="flex items-start gap-2 bg-forest-950/40 p-3 rounded-lg border border-white/5">
+                <Sliders className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-semibold text-white mb-1">
+                    Interval Asymmetry Offsets (point forecast + offset)
+                  </p>
+                  <p className="text-[11px] text-white/60 mb-1.5">
+                    {metricsInfo.bias_and_asymmetry.sign_convention}
+                  </p>
+                  <div className="grid grid-cols-3 gap-2 text-center text-[11px]">
+                    <div className="bg-white/5 p-1.5 rounded">
+                      <p className="text-white/50">50% Interval</p>
+                      <p className="font-mono text-emerald-300 font-semibold" data-testid="offset-50">
+                        [{metricsInfo.bias_and_asymmetry.asymmetry_offsets.nominal_50.lower_offset_mn_kg.toFixed(2)}, +{metricsInfo.bias_and_asymmetry.asymmetry_offsets.nominal_50.upper_offset_mn_kg.toFixed(2)}]
+                      </p>
+                    </div>
+                    <div className="bg-white/5 p-1.5 rounded">
+                      <p className="text-white/50">80% Interval</p>
+                      <p className="font-mono text-emerald-300 font-semibold" data-testid="offset-80">
+                        [{metricsInfo.bias_and_asymmetry.asymmetry_offsets.nominal_80.lower_offset_mn_kg.toFixed(2)}, +{metricsInfo.bias_and_asymmetry.asymmetry_offsets.nominal_80.upper_offset_mn_kg.toFixed(2)}]
+                      </p>
+                    </div>
+                    <div className="bg-white/5 p-1.5 rounded">
+                      <p className="text-white/50">90% Interval</p>
+                      <p className="font-mono text-emerald-300 font-semibold" data-testid="offset-90">
+                        [{metricsInfo.bias_and_asymmetry.asymmetry_offsets.nominal_90.lower_offset_mn_kg.toFixed(2)}, +{metricsInfo.bias_and_asymmetry.asymmetry_offsets.nominal_90.upper_offset_mn_kg.toFixed(2)}]
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2 bg-forest-950/40 p-3 rounded-lg border border-white/5 text-[11px] leading-relaxed">
+                <Info className="w-4 h-4 text-white/50 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-semibold text-white mb-0.5">Note on Interval Methodology</p>
+                  <p className="text-white/60">
+                    The serving API applies fixed empirical quantiles pooled over all {metricsInfo.bias_and_asymmetry.n_fixed_offset_errors} historical backtest errors (2012–2024, including 2023–2024). Reported coverage was evaluated causally via an expanding error quantile procedure at each origin across {metricsInfo.observed_backtest_coverage.n_origins} origins (2018–2024).
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
 
-        {/* Range Controls & Presets */}
+        {/* Dynamic Range Controls & Presets (Condition 3) */}
         <section className="bg-forest-900/40 rounded-2xl p-5 border border-white/10">
           <form onSubmit={handleCustomSubmit} className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <span className="text-sm font-semibold text-white flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-emerald-400" />
-                Select Forecast Horizon (Max 12 Months)
+                Select Forecast Horizon (Max 12 Months from Cutoff)
               </span>
 
-              {/* Preset buttons */}
+              {/* Dynamic Preset buttons */}
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => applyPreset('2025-01', '2025-03')}
+                  onClick={() => applyPreset(startHorizonMonth, presetQ1End)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    fromMonth === '2025-01' && toMonth === '2025-03'
+                    fromMonth === startHorizonMonth && toMonth === presetQ1End
                       ? 'bg-emerald-600 text-white font-semibold'
                       : 'bg-white/5 text-white/80 hover:bg-white/10'
                   }`}
                 >
-                  Q1 2025 (3 mo)
+                  Next 3 Months ({startHorizonMonth}..{presetQ1End})
                 </button>
                 <button
                   type="button"
-                  onClick={() => applyPreset('2025-01', '2025-06')}
+                  onClick={() => applyPreset(startHorizonMonth, presetH1End)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    fromMonth === '2025-01' && toMonth === '2025-06'
+                    fromMonth === startHorizonMonth && toMonth === presetH1End
                       ? 'bg-emerald-600 text-white font-semibold'
                       : 'bg-white/5 text-white/80 hover:bg-white/10'
                   }`}
                 >
-                  H1 2025 (6 mo)
+                  Next 6 Months ({startHorizonMonth}..{presetH1End})
                 </button>
                 <button
                   type="button"
-                  onClick={() => applyPreset('2025-01', '2025-12')}
+                  onClick={() => applyPreset(startHorizonMonth, presetFullEnd)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    fromMonth === '2025-01' && toMonth === '2025-12'
+                    fromMonth === startHorizonMonth && toMonth === presetFullEnd
                       ? 'bg-emerald-600 text-white font-semibold'
                       : 'bg-white/5 text-white/80 hover:bg-white/10'
                   }`}
                 >
-                  Full Year 2025 (12 mo)
+                  Full 12 Months ({startHorizonMonth}..{presetFullEnd})
                 </button>
               </div>
             </div>
 
-            {/* Dropdown selectors */}
+            {/* Dynamic Dropdown selectors */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end pt-2">
               <div>
                 <label className="block text-xs font-medium text-white/70 mb-1.5">
@@ -339,7 +494,7 @@ export function DemandForecastPage() {
         )}
 
         {!loading && error && (
-          <div className="bg-red-950/40 rounded-2xl p-6 border border-red-500/30 space-y-3">
+          <div className="bg-red-950/40 rounded-2xl p-6 border border-red-500/30 space-y-3" data-testid="card-error">
             <div className="flex items-center gap-2.5 text-red-400 font-semibold text-base">
               <AlertTriangle className="w-5 h-5 shrink-0" />
               <span>Forecast Generation Error ({errorStatus || 500})</span>
@@ -363,7 +518,7 @@ export function DemandForecastPage() {
           <div className="bg-forest-900/30 rounded-2xl p-12 border border-white/10 text-center space-y-2">
             <p className="text-sm font-semibold text-white">No Forecast Data Available</p>
             <p className="text-xs text-white/60">
-              Please choose a valid month range within 2025 to generate export demand projections.
+              Please choose a valid month range within the forecast horizon to generate projections.
             </p>
           </div>
         )}
@@ -470,7 +625,7 @@ export function DemandForecastPage() {
               </div>
             </div>
 
-            {/* Model Architecture & Provenance Card */}
+            {/* Model Architecture & Provenance Card (Condition 4: Show n for accuracy) */}
             <div className="bg-forest-900/30 rounded-2xl p-5 border border-white/10 text-xs space-y-3">
               <div className="flex items-center gap-2 text-sm font-semibold text-white">
                 <Layers className="w-4 h-4 text-emerald-400" />
@@ -485,21 +640,28 @@ export function DemandForecastPage() {
                 </div>
                 <div className="bg-forest-950/60 p-3 rounded-lg border border-white/5">
                   <p className="text-[10px] uppercase text-white/40">Evaluation MAE</p>
-                  <p className="font-semibold text-emerald-400 text-xs mt-0.5">
-                    1.734 Mn kg (Pooled Backtest)
+                  <p className="font-semibold text-emerald-400 text-xs mt-0.5" data-testid="metric-mae">
+                    {metricsInfo ? `${metricsInfo.backtest_metrics.mae.toFixed(3)} Mn kg` : '--'}
+                  </p>
+                  <p className="text-[10px] text-white/40 mt-0.5">
+                    n={metricsInfo?.backtest_metrics.n_origins || 152} origins (2012–2024)
                   </p>
                 </div>
                 <div className="bg-forest-950/60 p-3 rounded-lg border border-white/5">
                   <p className="text-[10px] uppercase text-white/40">Evaluation RMSE</p>
-                  <p className="font-semibold text-white text-xs mt-0.5">
-                    2.237 Mn kg (81 Origins)
+                  <p className="font-semibold text-white text-xs mt-0.5" data-testid="metric-rmse">
+                    {metricsInfo ? `${metricsInfo.backtest_metrics.rmse.toFixed(3)} Mn kg` : '--'}
+                  </p>
+                  <p className="text-[10px] text-white/40 mt-0.5" data-testid="metric-rmse-n">
+                    n={metricsInfo?.backtest_metrics.n_origins || 152} origins (2012–2024)
                   </p>
                 </div>
                 <div className="bg-forest-950/60 p-3 rounded-lg border border-white/5">
                   <p className="text-[10px] uppercase text-white/40">Training Cutoff</p>
                   <p className="font-semibold text-white text-xs mt-0.5">
-                    {modelInfo?.data_cutoff_date || '2024-12'}
+                    {latestActualMonth}
                   </p>
+                  <p className="text-[10px] text-white/40 mt-0.5">Direct 12m step-ahead</p>
                 </div>
               </div>
             </div>

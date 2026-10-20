@@ -253,15 +253,17 @@ def run_audit(
     dataset_path: Path = DEFAULT_DATASET,
     reports_dir: Path = DEFAULT_REPORTS,
     processed_path: Path = DEFAULT_PROCESSED,
+    forecast_reports_dir: Path = FORECAST_REPORTS,
+    selection_reports_dir: Path = SELECTION_REPORTS,
 ) -> dict[str, object]:
     reports_dir.mkdir(parents=True, exist_ok=True)
-    forecast = pd.read_csv(FORECAST_REPORTS / "predictions.csv")
-    selection = pd.read_csv(SELECTION_REPORTS / "feature_selection_predictions.csv")
-    forecast_metrics = pd.read_csv(FORECAST_REPORTS / "metrics.csv")
-    selection_metrics = pd.read_csv(SELECTION_REPORTS / "feature_subset_comparison.csv")
-    folds = pd.read_csv(SELECTION_REPORTS / "chronological_folds.csv")
-    selection_config = json.loads((SELECTION_REPORTS / "feature_selection_config.json").read_text(encoding="utf-8"))
-    experiment_config = json.loads((FORECAST_REPORTS / "experiment_config.json").read_text(encoding="utf-8"))
+    forecast = pd.read_csv(forecast_reports_dir / "predictions.csv")
+    selection = pd.read_csv(selection_reports_dir / "feature_selection_predictions.csv")
+    forecast_metrics = pd.read_csv(forecast_reports_dir / "metrics.csv")
+    selection_metrics = pd.read_csv(selection_reports_dir / "feature_subset_comparison.csv")
+    folds = pd.read_csv(selection_reports_dir / "chronological_folds.csv")
+    selection_config = json.loads((selection_reports_dir / "feature_selection_config.json").read_text(encoding="utf-8"))
+    experiment_config = json.loads((forecast_reports_dir / "experiment_config.json").read_text(encoding="utf-8"))
 
     raw, _, unit_audit = _load_and_audit(dataset_path)
     raw_history = raw["_target_model_mn_kg"].dropna().to_numpy(float)
@@ -551,8 +553,10 @@ def main() -> None:
     parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET)
     parser.add_argument("--reports", type=Path, default=DEFAULT_REPORTS)
     parser.add_argument("--processed", type=Path, default=DEFAULT_PROCESSED)
+    parser.add_argument("--forecast-reports", type=Path, default=FORECAST_REPORTS)
+    parser.add_argument("--selection-reports", type=Path, default=SELECTION_REPORTS)
     args = parser.parse_args()
-    result = run_audit(args.dataset, args.reports, args.processed)
+    result = run_audit(args.dataset, args.reports, args.processed, args.forecast_reports, args.selection_reports)
     print(result["metrics"].to_string(index=False))
     print(f"Audit outputs written under: {args.reports}")
 

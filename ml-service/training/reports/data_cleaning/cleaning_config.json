@@ -1,0 +1,22 @@
+{
+  "raw_dataset_path": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\dataset\\M1_combined_monthly_raw.csv",
+  "raw_sha256": "cc1b3dab621543e163c350e80c896c261cbe0c4b10ef74ca8d9e1e23b9b2d6b9",
+  "initial_rows": 302,
+  "cleaned_dataset_path": "D:\\Research_project\\J26--IT-423\\ml-service\\training\\dataset\\M1_combined_monthly_cleaned.csv",
+  "cleaned_sha256": "216a4d254de68640463b98331a50457a863806c6b50481234f2343a50fdac62c",
+  "final_rows": 300,
+  "unique_months": 300,
+  "dropped_duplicate_dates": [
+    "2007-02",
+    "2009-10"
+  ],
+  "total_typo_corrections_count": 4,
+  "component_suspect_retained_count": 3,
+  "nan_filled_count": 3,
+  "remaining_nan_targets": 3,
+  "remaining_nan_dates": [
+    "2003-12",
+    "2017-01",
+    "2022-11"
+  ]
+}

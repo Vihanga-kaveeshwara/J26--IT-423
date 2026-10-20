@@ -100,6 +100,9 @@ def _metrics(actual: np.ndarray, predicted: np.ndarray, training_history: np.nda
 
 
 def _fit_xgb(train: pd.DataFrame, row: pd.DataFrame, features: list[str]) -> float:
+    missing = set(features) - set(train.columns)
+    if missing:
+        raise ValueError(f"Requested feature column(s) not found in training frame: {missing}")
     usable = train.dropna(subset=["_label"])
     pipeline = Pipeline(
         [

@@ -10,3 +10,5 @@ matplotlib>=3.8,<4
 seaborn>=0.13,<1
 statsmodels>=0.15,<0.16
 xgboost>=3.4,<4
+httpx>=0.28.0
+

@@ -1,0 +1,115 @@
+{
+  "model_name": "m1_demand_forecast_v1",
+  "model_version": "1.0.0",
+  "model_architecture": "Ensemble Mean (Seasonal Mean 3yr, ETS(A,A,A), XGBoost)",
+  "training_date_utc": "2026-10-20T19:44:28.416616+00:00",
+  "data_cutoff_date": "2024-12-01",
+  "cleaned_data_sha256": "216a4d254de68640463b98331a50457a863806c6b50481234f2343a50fdac62c",
+  "features": [
+    "target_lag_1",
+    "target_lag_12",
+    "target_rolling_std_6",
+    "target_change_1",
+    "target_pct_change_1",
+    "target_month",
+    "target_month_sin",
+    "target_month_cos"
+  ],
+  "hyperparameters": {
+    "xgboost": {
+      "n_estimators": 160,
+      "max_depth": 2,
+      "learning_rate": 0.05,
+      "subsample": 0.9,
+      "colsample_bytree": 0.9,
+      "objective": "reg:squarederror",
+      "random_state": 42,
+      "n_jobs": 1
+    },
+    "ets": {
+      "error": "add",
+      "trend": "add",
+      "seasonal": "add",
+      "seasonal_periods": 12
+    },
+    "seasonal_mean_3yr": {
+      "window_years": 3,
+      "aggregation": "mean"
+    }
+  },
+  "backtest_metrics": {
+    "evaluation_protocol": "Direct 12-month-ahead rolling origin (2012-2024, 152 origins)",
+    "n_origins": 152,
+    "mae": 1.734264712050597,
+    "rmse": 2.236599057130248,
+    "mape_pct": 8.04955161545447,
+    "bias_mn_kg": 0.7476622873203896
+  },
+  "interval_calibration": {
+    "variant": "a_expanding_window_empirical_quantiles",
+    "empirical_signed_error_quantiles": {
+      "q05": -4.155325791774306,
+      "q10": -3.2503263599790975,
+      "q25": -1.9668273996460268,
+      "q75": 0.5625764783018932,
+      "q90": 1.8579453077098116,
+      "q95": 2.3473833156874213
+    },
+    "observed_backtest_coverage": {
+      "nominal_80_overall_pct": 67.90123456790124,
+      "nominal_80_test_phase_pct": 60.86956521739131,
+      "nominal_90_test_phase_pct": 78.26086956521739,
+      "nominal_50_overall_pct": 51.85185185185185,
+      "nominal_50_test_phase_pct": 39.130434782608695
+    },
+    "selection_window_2018_2022": {
+      "n": 58,
+      "nominal_50_pct": {
+        "observed_coverage_pct": 56.89655172413793,
+        "avg_width_mn_kg": 2.629817757989912,
+        "pinball_loss": 0.695313
+      },
+      "nominal_80_pct": {
+        "observed_coverage_pct": 70.6896551724138,
+        "avg_width_mn_kg": 4.625983796349377,
+        "pinball_loss": 0.415232
+      },
+      "nominal_90_pct": {
+        "observed_coverage_pct": 79.3103448275862,
+        "avg_width_mn_kg": 5.470972,
+        "pinball_loss": 0.275527
+      }
+    },
+    "held_out_test_2023_2024": {
+      "n": 23,
+      "nominal_50_pct": {
+        "observed_coverage_pct": 39.130434782608695,
+        "avg_width_mn_kg": 2.539203350087989,
+        "pinball_loss": 0.858298
+      },
+      "nominal_80_pct": {
+        "observed_coverage_pct": 60.86956521739131,
+        "avg_width_mn_kg": 4.937683937860098,
+        "pinball_loss": 0.499089
+      },
+      "nominal_90_pct": {
+        "observed_coverage_pct": 78.26086956521739,
+        "avg_width_mn_kg": 6.227293,
+        "pinball_loss": 0.322026
+      }
+    },
+    "overall_2018_2024": {
+      "n": 81,
+      "nominal_50_observed_coverage_pct": 51.85185185185185,
+      "nominal_50_avg_width_mn_kg": 2.604087719765799,
+      "nominal_80_observed_coverage_pct": 67.90123456790124,
+      "nominal_80_avg_width_mn_kg": 4.714491034088273
+    }
+  },
+  "known_limitations": [
+    "Direct 12-month model: forecasts for target month T are produced from origin T - 12 months (horizon = 12 months).",
+    "With historical data through 2024-12, target months up to 2025-12 are forecastable. Targets up to data_end + 12 months become available only when fresh actuals are appended or the model is updated.",
+    "Prediction intervals assume historical error distributions. During macroeconomic shocks or unprecedented supply disruptions (such as 2021-2022), realized coverage may drop below nominal targets.",
+    "Export volumes are in million kilograms (mn_kg); negative predictions are bounded at zero."
+  ]
+}

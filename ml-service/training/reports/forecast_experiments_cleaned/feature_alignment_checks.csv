@@ -1,0 +1,4 @@
+origin_date,expected_label_date,actual_label_date,label_date_matches,target_month_matches_label,rolling_uses_shifted_target
+2000-01,2001-01,2001-01,True,True,True
+2000-02,2001-02,2001-02,True,True,True
+2000-03,2001-03,2001-03,True,True,True

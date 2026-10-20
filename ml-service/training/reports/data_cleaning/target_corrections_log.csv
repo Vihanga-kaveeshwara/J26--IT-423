@@ -1,0 +1,13 @@
+date,unit,old_value,new_value,component_sum,relative_diff_pct,type,action,reason
+2007-02,kg,23751669.0,,,,duplicate,drop_duplicate_row,Exact physical duplicate row across all 77 columns
+2009-10,kg,26433250.0,,,,duplicate,drop_duplicate_row,Exact physical duplicate row across all 77 columns
+2005-01,mn_kg,23.068,23.068,23.533999999999995,1.9801,component_suspect,retain_raw_total_flag_component,Discrepancy of 1.98%: headline total is smooth and consistent with neighboring months; component breakdown is suspect
+2009-08,kg,2846289.4,28462894.0,28462894.0,90.0,total_typo,reconcile_component_sum_typo,Discrepancy of 90.00% confirms 10x total transcription error; replaced with component sum
+2012-06,kg,27005473.0,27005473.0,27535143.880000003,1.9236,component_suspect,retain_raw_total_flag_component,Discrepancy of 1.92%: headline total is smooth and consistent with neighboring months; component breakdown is suspect
+2012-12,kg,,26261842.0,26261842.0,,nan_fill,fill_nan_from_components,Target total was NaN but all 5 components are non-null
+2013-11,kg,268776910.0,26877691.0,26877691.0,900.0,total_typo,reconcile_component_sum_typo,Discrepancy of 900.00% confirms 10x total transcription error; replaced with component sum
+2020-06,kg,,20472920.0,20472920.0,,nan_fill,fill_nan_from_components,Target total was NaN but all 5 components are non-null
+2020-09,kg,243760770.0,24376077.0,24376077.0,900.0,total_typo,reconcile_component_sum_typo,Discrepancy of 900.00% confirms 10x total transcription error; replaced with component sum
+2022-09,kg,,18552571.0,18552571.0,,nan_fill,fill_nan_from_components,Target total was NaN but all 5 components are non-null
+2023-04,kg,14632415.0,14632415.0,14955157.940000001,2.1581,component_suspect,retain_raw_total_flag_component,Discrepancy of 2.16%: headline total is smooth and consistent with neighboring months; component breakdown is suspect
+2023-10,kg,240649380.0,24064938.0,24064938.0,900.0,total_typo,reconcile_component_sum_typo,Discrepancy of 900.00% confirms 10x total transcription error; replaced with component sum

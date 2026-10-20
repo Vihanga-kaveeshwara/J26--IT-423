@@ -1,0 +1,17 @@
+feature,folds_observed,folds_selected,selection_frequency,stability_class
+origin_time_index,23,8,0.34782608695652173,inconsistent
+target_change_1,23,21,0.9130434782608695,consistent
+target_lag_1,23,17,0.7391304347826086,moderate
+target_lag_12,23,23,1.0,consistent
+target_lag_3,23,0,0.0,inconsistent
+target_lag_6,23,0,0.0,inconsistent
+target_month,23,23,1.0,consistent
+target_month_cos,23,23,1.0,consistent
+target_month_sin,23,23,1.0,consistent
+target_pct_change_1,23,23,1.0,consistent
+target_rolling_mean_12,23,0,0.0,inconsistent
+target_rolling_mean_3,23,0,0.0,inconsistent
+target_rolling_mean_6,23,0,0.0,inconsistent
+target_rolling_std_12,23,0,0.0,inconsistent
+target_rolling_std_3,23,0,0.0,inconsistent
+target_rolling_std_6,23,23,1.0,consistent

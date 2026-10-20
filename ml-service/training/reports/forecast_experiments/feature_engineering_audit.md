@@ -1,4 +1,8 @@
+> [!WARNING]
+> **Superseded: Bug Fixed (SARIMA Window Bug & Raw Data Typos)**. This historical report was generated under older protocols containing the SARIMA window cutoff bug (evaluating origin $t$ instead of 12-month horizon $t+12$) and raw uncleaned transcription errors. Authoritative reconciled results are in `reports/final_benchmark_cleaned/final_benchmark_report.md` and `reports/backtest_cleaned_v2/backtest_v2_report.md`.
+
 # Feature Engineering Audit
+
 
 ## Existing implementation audit
 - Existing preprocessing lag/rolling columns were aligned to the current row, but the forecasting runner had a training-cutoff bug: rows whose labels occurred after the forecast origin were included. The runner now requires both feature origin and label date to be at or before the training origin.

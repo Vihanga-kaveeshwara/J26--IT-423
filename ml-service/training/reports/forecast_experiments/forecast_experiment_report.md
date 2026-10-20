@@ -1,4 +1,8 @@
+> [!WARNING]
+> **Superseded: Bug Fixed (SARIMA Window Bug & Raw Data Typos)**. This historical report was generated under older protocols containing the SARIMA window cutoff bug (evaluating origin $t$ instead of 12-month horizon $t+12$) and raw uncleaned transcription errors. Authoritative reconciled results are in `reports/final_benchmark_cleaned/final_benchmark_report.md` and `reports/backtest_cleaned_v2/backtest_v2_report.md`.
+
 # Forecast Experiment Report
+
 
 ## Audit decisions
 - Raw CSV was not modified.

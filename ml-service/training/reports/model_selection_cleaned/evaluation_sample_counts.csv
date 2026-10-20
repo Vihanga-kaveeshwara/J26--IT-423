@@ -1,0 +1,15 @@
+source,phase,model,rows_with_actual,rows_with_prediction,rows_evaluated,missing_prediction_rows
+forecast_experiments,validation,seasonal_naive_12,23,23,23,0
+forecast_experiments,validation,sarima,23,23,23,0
+forecast_experiments,validation,xgboost,23,23,23,0
+forecast_experiments,test,seasonal_naive_12,23,23,23,0
+forecast_experiments,test,sarima,23,23,23,0
+forecast_experiments,test,xgboost,23,23,23,0
+feature_selection,validation,seasonal_naive_12,23,23,23,0
+feature_selection,validation,sarima,23,23,23,0
+feature_selection,validation,xgboost_full,23,23,23,0
+feature_selection,validation,xgboost_selected,23,23,23,0
+feature_selection,test,seasonal_naive_12,24,23,23,1
+feature_selection,test,sarima,24,24,24,0
+feature_selection,test,xgboost_full,24,24,24,0
+feature_selection,test,xgboost_selected,24,24,24,0

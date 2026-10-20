@@ -1,0 +1,17 @@
+feature,dtype,included_in_primary_experiment
+target_lag_1,float64,True
+target_lag_3,float64,True
+target_lag_6,float64,True
+target_lag_12,float64,True
+target_rolling_mean_3,float64,True
+target_rolling_std_3,float64,True
+target_rolling_mean_6,float64,True
+target_rolling_std_6,float64,True
+target_rolling_mean_12,float64,True
+target_rolling_std_12,float64,True
+target_change_1,float64,True
+target_pct_change_1,float64,True
+target_month,int64,True
+target_month_sin,float64,True
+target_month_cos,float64,True
+origin_time_index,float64,True

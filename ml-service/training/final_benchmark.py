@@ -26,11 +26,11 @@ SELECTED_FEATURES = [
     "target_lag_1",
     "target_lag_12",
     "target_rolling_std_6",
+    "target_change_1",
     "target_pct_change_1",
     "target_month",
     "target_month_sin",
     "target_month_cos",
-    "origin_time_index",
 ]
 SARIMA_ORDER = (1, 1, 1)
 SARIMA_SEASONAL_ORDER = (1, 1, 1, 12)
@@ -97,6 +97,9 @@ def _fit_xgb(train: pd.DataFrame, row: pd.DataFrame) -> float:
             ),
         ]
     )
+    missing = set(SELECTED_FEATURES) - set(usable.columns)
+    if missing:
+        raise ValueError(f"Requested feature column(s) not found in training frame: {missing}")
     model.fit(usable[SELECTED_FEATURES], usable["_label"])
     return float(model.predict(row[SELECTED_FEATURES])[0])
 
@@ -192,7 +195,7 @@ def run_benchmark(
                 continue
 
             row = frame.loc[[origin]]
-            history = train["_target_model_mn_kg"].dropna().to_numpy(float)
+            history = frame.loc[frame.index <= origin, "_target_model_mn_kg"].dropna().to_numpy(float)
             sarima = _fit_sarima(history)
             if pd.isna(sarima["forecast"]):
                 sample_rows.append(

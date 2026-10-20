@@ -1,3 +1,6 @@
+> [!WARNING]
+> **Superseded: Pre-Correction Historical Report**. This report was generated on raw uncorrected data with known transcription typos and duplicate rows. See `reports/feature_selection_cleaned/feature_selection_report.md` for the authoritative reconciled metrics.
+
 # Feature Selection Report
 
 ## Scope and candidate set

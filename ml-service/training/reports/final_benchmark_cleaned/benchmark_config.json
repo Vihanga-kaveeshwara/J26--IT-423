@@ -1,0 +1,49 @@
+{
+  "dataset": "ml-service\\training\\dataset\\M1_combined_monthly_cleaned.csv",
+  "processed_dataset": "ml-service\\training\\data\\processed\\tea_exports_cleaned.csv",
+  "horizon_months": 12,
+  "selected_features_frozen": [
+    "target_lag_1",
+    "target_lag_12",
+    "target_rolling_std_6",
+    "target_change_1",
+    "target_pct_change_1",
+    "target_month",
+    "target_month_sin",
+    "target_month_cos"
+  ],
+  "models": [
+    "seasonal_naive",
+    "baseline_sarima",
+    "selected_feature_xgboost"
+  ],
+  "sarima_order": [
+    1,
+    1,
+    1
+  ],
+  "sarima_seasonal_order": [
+    1,
+    1,
+    1,
+    12
+  ],
+  "xgboost_random_seed": 42,
+  "validation_period": [
+    "2021-01",
+    "2022-12"
+  ],
+  "test_period": [
+    "2023-01",
+    "2024-12"
+  ],
+  "common_sample_rule": "actual, origin target for seasonal naive, at least 36 observed training labels, and all three forecasts generated at the same origin",
+  "mape_rule": "exclude zero actuals from percentage denominator; retain all nonzero actuals",
+  "mase_rule": "mean absolute error divided by mean absolute 12-month seasonal difference computed only through the pre-evaluation cutoff",
+  "selection_rule": "feature set and model parameters frozen before final test evaluation; test outcomes are descriptive holdout evidence only",
+  "raw_sha256": "216a4d254de68640463b98331a50457a863806c6b50481234f2343a50fdac62c",
+  "target_unit_definition_verified": false,
+  "data_provenance": "uncertain; no provider documentation in project",
+  "rainfall_minus_999_preserved": true,
+  "duplicate_policy": "exact duplicate copies removed by existing loader; no monthly aggregation"
+}

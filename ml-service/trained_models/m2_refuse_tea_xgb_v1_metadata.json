@@ -1,0 +1,88 @@
+{
+  "model_name": "m2_refuse_tea_xgb_v1",
+  "model_class": "xgboost.XGBRegressor",
+  "training_date_utc": "2026-10-19T22:19:37.970894+00:00",
+  "dataset": {
+    "total_samples": 620,
+    "train_val_samples": 496,
+    "test_samples": 124,
+    "test_date_range": [
+      "2025-08-07",
+      "2025-12-31"
+    ],
+    "validation_strategy": "TimeSeriesSplit (n_splits=5) + Chronological 20% Holdout"
+  },
+  "feature_list": [
+    "machine_downtime_log",
+    "machine_downtime_hrs",
+    "relative_humidity_pct",
+    "withering_duration_bucket",
+    "ambient_temperature_c",
+    "withering_duration_hrs",
+    "green_leaf_input_kg",
+    "rolling_ambient_temp_3batch",
+    "withering_deviation",
+    "plucking_fine_leaf_pct",
+    "tea_grade_produced_PEKOE",
+    "tea_grade_produced_FBOP",
+    "tea_grade_produced_OP",
+    "tea_grade_produced_BOPF",
+    "tea_grade_produced_DUST",
+    "rolling_humidity_3batch",
+    "region_Uva",
+    "region_Nuwara Eliya",
+    "dryer_deviation"
+  ],
+  "num_features": 19,
+  "hyperparameters": {
+    "max_depth": 2,
+    "learning_rate": 0.05,
+    "n_estimators": 100,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_lambda": 2.0,
+    "random_state": 42,
+    "n_jobs": -1
+  },
+  "final_test_metrics": {
+    "rmse": 1.4539107990667275,
+    "mae": 1.0594121086981987,
+    "r2": 0.2046753924642406,
+    "mape": 16.180417251806617
+  },
+  "threshold_evaluations": {
+    "rmse_lt_1_0": {
+      "target": "< 1.0%",
+      "observed": "1.4539%",
+      "pass": false
+    },
+    "mae_lt_0_75": {
+      "target": "< 0.75%",
+      "observed": "1.0594%",
+      "pass": false
+    },
+    "r2_gt_0_85": {
+      "target": "> 0.85",
+      "observed": "0.2047",
+      "pass": false
+    },
+    "mape_lt_8_0": {
+      "target": "< 8.0%",
+      "observed": "16.18%",
+      "pass": false
+    },
+    "latency_lt_2_0s": {
+      "target": "< 2.0s",
+      "observed": "2.481ms",
+      "pass": true
+    }
+  },
+  "inference_latency_ms": {
+    "mean_ms": 2.137650999975449,
+    "p95_ms": 2.480570001171145,
+    "max_ms": 2.699900000152411,
+    "threshold_ms": 2000.0,
+    "pass": true
+  },
+  "notes": "Trained on native unscaled feature values: Decision tree splits are scale-invariant, allowing SHAP analysis in evaluate.py to operate directly on native physical units."
+}

@@ -11,8 +11,6 @@ __pycache__/
 .venv/
 venv/
 
-ml-service/trained_models/*
-!ml-service/trained_models/.gitkeep
 
 uploads/*
 !uploads/.gitkeep
